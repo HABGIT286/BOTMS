@@ -68,6 +68,12 @@
             messageElement.classList.add("message");
             messageElement.textContent = text;
 
+            // إضافة أحداث الضغط المطول
+            messageElement.addEventListener('contextmenu', function(event) {
+                event.preventDefault(); // منع القوائم الافتراضية
+                showContextMenu(event, text);
+            });
+
             if (type === "sent") {
                 const statusElement = document.createElement('div');
                 statusElement.classList.add("status");
@@ -78,6 +84,44 @@
             messageContainer.appendChild(messageElement);
             chatContainer.appendChild(messageContainer);
             chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function showContextMenu(event, messageText) {
+            const menu = document.createElement('div');
+            menu.classList.add("context-menu");
+            menu.style.left = `${event.pageX}px`;
+            menu.style.top = `${event.pageY}px`;
+
+            // إضافة خيار نسخ
+            const copyOption = document.createElement('button');
+            copyOption.textContent = "نسخ الرسالة";
+            copyOption.onclick = function() {
+                navigator.clipboard.writeText(messageText);
+                alert("تم نسخ الرسالة");
+                document.body.removeChild(menu);
+            };
+
+            // إضافة خيار حذف
+            const deleteOption = document.createElement('button');
+            deleteOption.textContent = "حذف الرسالة";
+            deleteOption.onclick = function() {
+                deleteMessage(messageText);
+                document.body.removeChild(menu);
+            };
+
+            menu.appendChild(copyOption);
+            menu.appendChild(deleteOption);
+            document.body.appendChild(menu);
+        }
+
+        function deleteMessage(messageText) {
+            const messageContainers = document.querySelectorAll('.message');
+            messageContainers.forEach(container => {
+                if (container.textContent === messageText) {
+                    container.parentElement.remove();
+                }
+            });
+            alert("تم حذف الرسالة من قبل الطرفين");
         }
 
         function markAsRead() {

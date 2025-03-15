@@ -40,22 +40,64 @@
             overflow-y: auto;
         }
 
+        .message-container {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
         .message {
             padding: 10px;
             border-radius: 10px;
-            margin-bottom: 10px;
-            background-color: #f1f1f1;
+            max-width: 70%;
+            position: relative;
+            cursor: pointer;
         }
 
         .sent {
             background-color: #007bff;
             color: white;
             align-self: flex-end;
+            text-align: right;
         }
 
         .received {
             background-color: #f1f1f1;
+            color: black;
             align-self: flex-start;
+            text-align: left;
+        }
+
+        .status {
+            font-size: 0.8em;
+            margin-top: 5px;
+            color: gray;
+        }
+
+        .sent .status {
+            align-self: flex-end;
+            color: white;
+        }
+
+        .message-options {
+            display: none;
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .message-options span {
+            margin: 0 5px;
+            padding: 5px;
+            cursor: pointer;
         }
 
         .input-container {
@@ -99,17 +141,16 @@
     <input type="text" id="username" placeholder="أدخل اسم المستخدم" oninput="showChat()"/>
 
     <div class="chat-container" id="chatContainer" style="display:none;">
-        <div class="message received">مرحبًا، كيف يمكنني مساعدتك؟</div>
-        <div class="message sent">أريد المساعدة في شيء ما.</div>
-        <!-- الرسائل ستضاف هنا عبر الجافا سكريبت -->
+        <div class="message-container received">
+            <div class="message">مرحبًا، كيف يمكنني مساعدتك؟</div>
+            <div class="status">تم القراءة</div>
+        </div>
     </div>
 
     <div class="input-container" id="inputContainer" style="display:none;">
         <textarea id="message" placeholder="اكتب رسالتك هنا..."></textarea>
         <button onclick="sendMessage()">إرسال</button>
     </div>
-
-    <div id="typingStatus" class="typing-status"></div>
 
     <script>
         function showChat() {
@@ -122,15 +163,59 @@
         }
 
         function sendMessage() {
-            const messageText = document.getElementById("message").value;
-            if (messageText.trim()) {
-                const messageContainer = document.createElement("div");
-                messageContainer.classList.add("message", "sent");
-                messageContainer.textContent = messageText;
-                document.getElementById("chatContainer").appendChild(messageContainer);
-                document.getElementById("message").value = "";
-                document.getElementById("chatContainer").scrollTop = document.getElementById("chatContainer").scrollHeight;
+            const messageText = document.getElementById("message").value.trim();
+            if (!messageText) return;
+
+            const messageContainer = document.createElement("div");
+            messageContainer.classList.add("message-container", "sent");
+
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("message");
+            messageDiv.textContent = messageText;
+            messageDiv.onclick = () => showOptions(messageDiv);
+
+            const statusDiv = document.createElement("div");
+            statusDiv.classList.add("status");
+            statusDiv.textContent = "تم الإرسال";
+
+            messageContainer.appendChild(messageDiv);
+            messageContainer.appendChild(statusDiv);
+            document.getElementById("chatContainer").appendChild(messageContainer);
+
+            document.getElementById("message").value = "";
+            document.getElementById("chatContainer").scrollTop = document.getElementById("chatContainer").scrollHeight;
+            
+            setTimeout(() => {
+                statusDiv.textContent = "تم القراءة";
+            }, 2000);
+        }
+
+        function showOptions(messageDiv) {
+            let existingOptions = messageDiv.parentElement.querySelector(".message-options");
+            if (existingOptions) {
+                existingOptions.remove();
+                return;
             }
+
+            const optionsDiv = document.createElement("div");
+            optionsDiv.classList.add("message-options");
+            optionsDiv.innerHTML = `
+                <span onclick="copyMessage('${messageDiv.textContent}')">نسخ</span> |
+                <span onclick="deleteMessage(this)">حذف</span>
+            `;
+            messageDiv.parentElement.appendChild(optionsDiv);
+            optionsDiv.style.display = "block";
+        }
+
+        function copyMessage(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("تم نسخ الرسالة!");
+            });
+        }
+
+        function deleteMessage(deleteBtn) {
+            const messageContainer = deleteBtn.closest(".message-container");
+            messageContainer.remove();
         }
     </script>
 

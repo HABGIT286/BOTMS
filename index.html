@@ -1,131 +1,18 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NOOX - دردشة عبر Telegram API</title>
     <link rel="stylesheet" href="style.css">  <!-- ربط ملف CSS هنا -->
-    </head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOOX - دردشة عبر Telegram API</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7fa;
-            margin: 0;
-            padding: 0;
-            direction: rtl;
-            text-align: center;
-        }
-
-        #siteName {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #007bff;
-            margin-top: 20px;
-        }
-
-        form {
-            width: 80%;
-            max-width: 400px;
-            margin: 20px auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        input, textarea, button {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            font-size: 1em;
-        }
-
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .chat-container {
-            width: 80%;
-            max-width: 400px;
-            margin: auto;
-            background-color: #fff;
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 10px;
-            overflow-y: auto;
-            max-height: 400px;
-        }
-
-        .message-container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .sent {
-            justify-content: flex-end;
-        }
-
-        .received {
-            justify-content: flex-start;
-        }
-
-        .message {
-            background-color: #f1f1f1;
-            padding: 10px;
-            border-radius: 8px;
-            max-width: 70%;
-            position: relative;
-        }
-
-        .sent .message {
-            background-color: #007bff;
-            color: white;
-            position: relative;
-        }
-
-        .sent .status {
-            font-size: 0.8em;
-            position: absolute;
-            bottom: -15px;
-            right: 5px;
-            color: white;
-        }
-
-        .read {
-            background-color: #0056b3 !important;
-        }
-
-        .typing-status {
-            text-align: right;
-            font-size: 0.9em;
-            color: gray;
-            padding: 5px;
-        }
-
-    </style>
 </head>
 <body>
 
     <div id="siteName">NOOX</div>
 
     <form id="messageForm">
-        <label for="username">  ادخل ID المستخدم :</label><br>
-        <input type="text" id="username" name="username" placeholder=" ID"><br><br>
+        <label for="username">ادخل ID المستخدم :</label><br>
+        <input type="text" id="username" name="username" placeholder="ID"><br><br>
 
         <label for="message">أدخل الرسالة:</label><br>
         <textarea id="message" name="message" rows="4" required></textarea><br><br>

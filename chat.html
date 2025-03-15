@@ -24,13 +24,15 @@
             flex-grow: 1;
             overflow-y: auto;
             display: flex;
-            flex-direction: column-reverse;
+            flex-direction: column;
             padding: 10px;
+            max-height: 75vh;
         }
 
         .message-container {
             display: flex;
             align-items: center;
+            position: relative;
             margin-bottom: 10px;
         }
 
@@ -53,21 +55,37 @@
         .sent .message {
             background-color: #007bff;
             color: white;
-            align-self: flex-end;
         }
 
         .received .message {
             background-color: #f1f1f1;
             color: black;
-            align-self: flex-start;
         }
 
-        .message-container:hover {
+        .options {
+            position: absolute;
+            top: -25px;
+            right: 5px;
+            display: none;
+        }
+
+        .options button {
+            font-size: 12px;
+            padding: 5px;
+            margin: 2px;
+            border: none;
             cursor: pointer;
+            border-radius: 5px;
         }
 
-        .message-container:active {
-            opacity: 0.7;
+        .copy-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
         }
 
         .input-container {
@@ -88,8 +106,9 @@
             margin: 5px;
         }
 
-        .input-container input {
+        .input-container textarea {
             flex: 1;
+            resize: none;
         }
 
         .input-container button {
@@ -152,7 +171,6 @@
                     if (data.ok) {
                         appendMessage("sent", messageText, data.result.message_id);
                         document.getElementById("message").value = "";
-                        chatContainer.scrollTop = 0;
                     } else {
                         alert("فشل في إرسال الرسالة، تحقق من ID!");
                     }
@@ -171,24 +189,41 @@
             messageElement.classList.add("message");
             messageElement.textContent = text;
 
-            messageContainer.appendChild(messageElement);
-            chatContainer.insertBefore(messageContainer, chatContainer.firstChild);
-            
-            chatContainer.scrollTop = 0;
+            const options = document.createElement("div");
+            options.classList.add("options");
 
-            messageContainer.addEventListener("contextmenu", function(event) {
+            const copyBtn = document.createElement("button");
+            copyBtn.classList.add("copy-btn");
+            copyBtn.innerHTML = "💾";
+            copyBtn.onclick = () => copyText(text);
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.classList.add("delete-btn");
+            deleteBtn.innerHTML = "❌";
+            deleteBtn.onclick = () => deleteMessage(messageContainer, messageId);
+
+            options.appendChild(copyBtn);
+            options.appendChild(deleteBtn);
+
+            messageContainer.appendChild(messageElement);
+            messageContainer.appendChild(options);
+            chatContainer.appendChild(messageContainer);
+
+            messageElement.addEventListener("contextmenu", function(event) {
                 event.preventDefault();
-                showOptions(messageContainer, text, messageId);
+                toggleOptions(options);
             });
+
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        function showOptions(element, text, messageId) {
-            const action = confirm("اختر الإجراء:\n1. نسخ الرسالة\n2. حذف الرسالة");
-            if (action) {
-                navigator.clipboard.writeText(text).then(() => alert("تم النسخ!"));
-            } else {
-                deleteMessage(element, messageId);
-            }
+        function toggleOptions(options) {
+            document.querySelectorAll(".options").forEach(opt => opt.style.display = "none");
+            options.style.display = options.style.display === "block" ? "none" : "block";
+        }
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => alert("تم النسخ!"));
         }
 
         function deleteMessage(element, messageId) {
@@ -219,15 +254,14 @@
                 .then(response => response.json())
                 .then(data => {
                     data.result.forEach(msg => {
-                        if (msg.message && msg.message.text && !document.querySelector(`[data-id='${msg.message.message_id}']`)) {
+                        if (msg.message && msg.message.text) {
                             appendMessage("received", msg.message.text, msg.message.message_id);
                         }
                     });
-                })
-                .catch(() => console.error("خطأ في جلب الرسائل"));
+                });
         }
 
-        setInterval(fetchMessages, 3000);
+        setInterval(fetchMessages, 5000);
     </script>
 
 </body>

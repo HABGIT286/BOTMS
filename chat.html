@@ -8,17 +8,21 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #f4f4f4;
+            background-image: url('a628486ff04656f787be2a3bad17352e_low.webp'); /* استبدال الخلفية بالصورة */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white; /* تحسين التباين */
         }
 
         .chat-container {
             width: 80%;
             max-width: 400px;
             margin: 20px auto;
-            background: #fff;
+            background: rgba(0, 0, 0, 0.6); /* شفافية للخلفية لتحسين القراءة */
             padding: 10px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             max-height: 400px;
             overflow-y: auto;
             text-align: left;
@@ -58,12 +62,8 @@
 
         .status {
             font-size: 0.8em;
-            color: gray;
+            color: lightgray;
             margin-top: 2px;
-        }
-
-        .message-container:hover .options {
-            display: flex;
         }
 
         .options {
@@ -86,6 +86,33 @@
 
         .options span:hover {
             color: red;
+        }
+
+        /* تحسين الإدخال */
+        input, textarea, button {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        /* تحسين الحاوية */
+        #messageForm {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            display: inline-block;
         }
     </style>
 </head>

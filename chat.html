@@ -18,15 +18,15 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
+            justify-content: flex-end;
         }
 
         #chatContainer {
-            flex-grow: 1;
             overflow-y: auto;
             display: flex;
-            flex-direction: column;
+            flex-direction: column-reverse;
             padding: 10px;
-            max-height: 75vh;
+            max-height: 70vh;
         }
 
         .message-container {
@@ -95,10 +95,9 @@
             width: 100%;
             background: rgba(0, 0, 0, 0.7);
             padding: 10px;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
         }
 
-        .input-container input, .input-container textarea, .input-container button {
+        .input-container textarea, .input-container button {
             padding: 10px;
             border-radius: 5px;
             border: none;
@@ -115,10 +114,6 @@
             background-color: #28a745;
             color: white;
             cursor: pointer;
-        }
-
-        .input-container button:hover {
-            background-color: #218838;
         }
 
         #idInputContainer {
@@ -148,6 +143,7 @@
     <script>
         const token = "7283631968:AAGOJaiPIpsXeUxaAV902aQx2nhtEzIvWa0";
         let chatId = null;
+        let lastMessageId = 0;
         const chatContainer = document.getElementById("chatContainer");
         const messageInputContainer = document.getElementById("messageInputContainer");
 
@@ -180,7 +176,9 @@
                 });
         }
 
-        function appendMessage(type, text, messageId = null) {
+        function appendMessage(type, text, messageId) {
+            if (document.querySelector(`[data-id="${messageId}"]`)) return;
+
             const messageContainer = document.createElement("div");
             messageContainer.classList.add("message-container", type);
             messageContainer.dataset.id = messageId;
@@ -207,7 +205,7 @@
 
             messageContainer.appendChild(messageElement);
             messageContainer.appendChild(options);
-            chatContainer.appendChild(messageContainer);
+            chatContainer.prepend(messageContainer);
 
             messageElement.addEventListener("contextmenu", function(event) {
                 event.preventDefault();
@@ -254,8 +252,9 @@
                 .then(response => response.json())
                 .then(data => {
                     data.result.forEach(msg => {
-                        if (msg.message && msg.message.text) {
+                        if (msg.message && msg.message.text && msg.message.message_id > lastMessageId) {
                             appendMessage("received", msg.message.text, msg.message.message_id);
+                            lastMessageId = msg.message.message_id;
                         }
                     });
                 });

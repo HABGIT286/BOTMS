@@ -3,48 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>محادثة</title>
+    <title>NOOX - دردشة عبر Telegram API</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: #fafafa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            flex-direction: column;
-        }
-
-        #username {
-            width: 80%;
-            max-width: 400px;
-            padding: 10px;
-            margin-top: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1em;
+            text-align: center;
+            background-color: #f4f4f4;
         }
 
         .chat-container {
             width: 80%;
             max-width: 400px;
-            background-color: #fff;
+            margin: 20px auto;
+            background: #fff;
+            padding: 10px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
             max-height: 400px;
             overflow-y: auto;
+            text-align: left;
         }
 
         .message-container {
             display: flex;
             flex-direction: column;
-            position: relative;
             margin-bottom: 10px;
+            position: relative;
         }
 
         .message {
@@ -52,159 +36,161 @@
             border-radius: 10px;
             max-width: 70%;
             position: relative;
-            cursor: pointer;
         }
 
         .sent {
+            align-self: flex-end;
+        }
+
+        .sent .message {
             background-color: #007bff;
             color: white;
-            align-self: flex-end;
-            text-align: right;
         }
 
         .received {
+            align-self: flex-start;
+        }
+
+        .received .message {
             background-color: #f1f1f1;
             color: black;
-            align-self: flex-start;
-            text-align: left;
         }
 
         .status {
             font-size: 0.8em;
-            margin-top: 5px;
             color: gray;
+            margin-top: 2px;
         }
 
-        .sent .status {
-            align-self: flex-end;
-            color: white;
-        }
-
-        .message-options {
-            display: none;
-            position: absolute;
-            bottom: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 5px;
-            border-radius: 5px;
-            white-space: nowrap;
-            cursor: pointer;
-        }
-
-        .message-options span {
-            margin: 0 5px;
-            padding: 5px;
-            cursor: pointer;
-        }
-
-        .input-container {
-            width: 80%;
-            max-width: 400px;
-            margin-top: 20px;
+        .message-container:hover .options {
             display: flex;
         }
 
-        textarea {
-            width: 80%;
-            padding: 10px;
-            border-radius: 5px;
+        .options {
+            display: none;
+            position: absolute;
+            bottom: -20px;
+            right: 10px;
+            background: white;
             border: 1px solid #ddd;
-        }
-
-        button {
-            width: 20%;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
             border-radius: 5px;
-            padding: 10px;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .typing-status {
-            text-align: right;
-            font-size: 0.9em;
-            color: gray;
             padding: 5px;
+            font-size: 0.8em;
+            cursor: pointer;
+        }
+
+        .options span {
+            margin: 0 5px;
+            cursor: pointer;
+        }
+
+        .options span:hover {
+            color: red;
         }
     </style>
 </head>
 <body>
 
-    <input type="text" id="username" placeholder="أدخل اسم المستخدم" oninput="showChat()"/>
+    <h2>NOOX</h2>
 
-    <div class="chat-container" id="chatContainer" style="display:none;">
-        <div class="message-container received">
-            <div class="message">مرحبًا، كيف يمكنني مساعدتك؟</div>
-            <div class="status">تم القراءة</div>
-        </div>
-    </div>
+    <form id="messageForm">
+        <label for="username">أدخل ID المستخدم:</label><br>
+        <input type="text" id="username" name="username" placeholder="ID"><br><br>
 
-    <div class="input-container" id="inputContainer" style="display:none;">
-        <textarea id="message" placeholder="اكتب رسالتك هنا..."></textarea>
-        <button onclick="sendMessage()">إرسال</button>
-    </div>
+        <label for="message">أدخل الرسالة:</label><br>
+        <textarea id="message" name="message" rows="4" required></textarea><br><br>
+
+        <button type="submit">إرسال</button>
+    </form>
+
+    <h3>المحادثة:</h3>
+    <div class="chat-container" id="chatContainer"></div>
 
     <script>
-        function showChat() {
-            const username = document.getElementById("username").value;
-            if (username) {
-                document.getElementById("chatContainer").style.display = "block";
-                document.getElementById("inputContainer").style.display = "flex";
-                document.getElementById("username").style.display = "none";
-            }
-        }
+        const token = "7283631968:AAGOJaiPIpsXeUxaAV902aQx2nhtEzIvWa0";
+        const chatIdInput = document.getElementById("username");
+        const chatContainer = document.getElementById("chatContainer");
+        let lastMessageId = 0;
 
-        function sendMessage() {
-            const messageText = document.getElementById("message").value.trim();
-            if (!messageText) return;
+        document.getElementById("messageForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const chatId = chatIdInput.value.trim();
+            const messageText = document.getElementById("message").value;
 
-            const messageContainer = document.createElement("div");
-            messageContainer.classList.add("message-container", "sent");
+            if (!chatId || !messageText) return;
 
-            const messageDiv = document.createElement("div");
-            messageDiv.classList.add("message");
-            messageDiv.textContent = messageText;
-            messageDiv.onclick = () => showOptions(messageDiv);
+            const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(messageText)}`;
 
-            const statusDiv = document.createElement("div");
-            statusDiv.classList.add("status");
-            statusDiv.textContent = "تم الإرسال";
-
-            messageContainer.appendChild(messageDiv);
-            messageContainer.appendChild(statusDiv);
-            document.getElementById("chatContainer").appendChild(messageContainer);
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        appendMessage("sent", messageText, "تم الإرسال", data.result.message_id);
+                        setTimeout(() => {
+                            markAsRead(data.result.message_id);
+                        }, 3000);
+                    } else {
+                        alert("فشل في إرسال الرسالة، تحقق من ID!");
+                    }
+                })
+                .catch(error => {
+                    alert("خطأ أثناء الإرسال!");
+                });
 
             document.getElementById("message").value = "";
-            document.getElementById("chatContainer").scrollTop = document.getElementById("chatContainer").scrollHeight;
-            
-            setTimeout(() => {
-                statusDiv.textContent = "تم القراءة";
-            }, 2000);
+        });
+
+        function appendMessage(type, text, status = "", messageId = null) {
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add("message-container", type);
+            messageContainer.dataset.id = messageId;
+
+            const messageElement = document.createElement('div');
+            messageElement.classList.add("message");
+            messageElement.textContent = text;
+
+            const statusElement = document.createElement('div');
+            statusElement.classList.add("status");
+            statusElement.textContent = status;
+
+            const options = document.createElement('div');
+            options.classList.add("options");
+            options.innerHTML = `<span onclick="copyMessage('${text}')">📋 نسخ</span> | 
+                                 <span onclick="deleteMessage(this, '${messageId}')">❌ حذف</span>`;
+
+            messageContainer.appendChild(messageElement);
+            if (type === "sent") messageContainer.appendChild(statusElement);
+            messageContainer.appendChild(options);
+            chatContainer.appendChild(messageContainer);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        function showOptions(messageDiv) {
-            let existingOptions = messageDiv.parentElement.querySelector(".message-options");
-            if (existingOptions) {
-                existingOptions.remove();
-                return;
-            }
+        function markAsRead(messageId) {
+            const messages = document.querySelectorAll(".sent .status");
+            messages.forEach(status => {
+                if (!status.dataset.read) {
+                    status.textContent = "تم القراءة";
+                    status.dataset.read = true;
+                }
+            });
+        }
 
-            const optionsDiv = document.createElement("div");
-            optionsDiv.classList.add("message-options");
-            optionsDiv.innerHTML = `
-                <span onclick="copyMessage('${messageDiv.textContent}')">نسخ</span> |
-                <span onclick="deleteMessage(this)">حذف</span>
-            `;
-            messageDiv.parentElement.appendChild(optionsDiv);
-            optionsDiv.style.display = "block";
+        function fetchMessages() {
+            const url = `https://api.telegram.org/bot${token}/getUpdates`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    data.result.forEach(msg => {
+                        if (msg.message && msg.message.message_id > lastMessageId) {
+                            lastMessageId = msg.message.message_id;
+                            if (msg.message.text) {
+                                appendMessage("received", msg.message.text);
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error("خطأ في جلب الرسائل:", error));
         }
 
         function copyMessage(text) {
@@ -213,10 +199,27 @@
             });
         }
 
-        function deleteMessage(deleteBtn) {
-            const messageContainer = deleteBtn.closest(".message-container");
-            messageContainer.remove();
+        function deleteMessage(element, messageId) {
+            const messageContainer = element.closest(".message-container");
+
+            if (messageId) {
+                const url = `https://api.telegram.org/bot${token}/deleteMessage?chat_id=${chatIdInput.value}&message_id=${messageId}`;
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.ok) {
+                            messageContainer.remove();
+                        } else {
+                            alert("فشل في حذف الرسالة!");
+                        }
+                    })
+                    .catch(error => console.error("خطأ أثناء حذف الرسالة:", error));
+            } else {
+                messageContainer.remove();
+            }
         }
+
+        setInterval(fetchMessages, 5000);
     </script>
 
 </body>

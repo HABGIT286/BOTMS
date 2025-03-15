@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محادثة</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #fafafa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        #username {
+            width: 80%;
+            max-width: 400px;
+            padding: 10px;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .chat-container {
+            width: 80%;
+            max-width: 400px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            background-color: #f1f1f1;
+        }
+
+        .sent {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+        }
+
+        .received {
+            background-color: #f1f1f1;
+            align-self: flex-start;
+        }
+
+        .input-container {
+            width: 80%;
+            max-width: 400px;
+            margin-top: 20px;
+            display: flex;
+        }
+
+        textarea {
+            width: 80%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            width: 20%;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .typing-status {
+            text-align: right;
+            font-size: 0.9em;
+            color: gray;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <input type="text" id="username" placeholder="أدخل اسم المستخدم" oninput="showChat()"/>
+
+    <div class="chat-container" id="chatContainer" style="display:none;">
+        <div class="message received">مرحبًا، كيف يمكنني مساعدتك؟</div>
+        <div class="message sent">أريد المساعدة في شيء ما.</div>
+        <!-- الرسائل ستضاف هنا عبر الجافا سكريبت -->
+    </div>
+
+    <div class="input-container" id="inputContainer" style="display:none;">
+        <textarea id="message" placeholder="اكتب رسالتك هنا..."></textarea>
+        <button onclick="sendMessage()">إرسال</button>
+    </div>
+
+    <div id="typingStatus" class="typing-status"></div>
+
+    <script>
+        function showChat() {
+            const username = document.getElementById("username").value;
+            if (username) {
+                document.getElementById("chatContainer").style.display = "block";
+                document.getElementById("inputContainer").style.display = "flex";
+                document.getElementById("username").style.display = "none";
+            }
+        }
+
+        function sendMessage() {
+            const messageText = document.getElementById("message").value;
+            if (messageText.trim()) {
+                const messageContainer = document.createElement("div");
+                messageContainer.classList.add("message", "sent");
+                messageContainer.textContent = messageText;
+                document.getElementById("chatContainer").appendChild(messageContainer);
+                document.getElementById("message").value = "";
+                document.getElementById("chatContainer").scrollTop = document.getElementById("chatContainer").scrollHeight;
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -21,12 +21,42 @@
             justify-content: flex-end;
         }
 
+        .input-container {
+            display: flex;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-container textarea, .input-container button {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        .input-container textarea {
+            flex: 1;
+            resize: none;
+        }
+
+        .input-container button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+
         #chatContainer {
+            flex-grow: 1;
             overflow-y: auto;
             display: flex;
             flex-direction: column-reverse;
             padding: 10px;
-            max-height: 70vh;
+            max-height: calc(100vh - 80px);
         }
 
         .message-container {
@@ -64,9 +94,12 @@
 
         .options {
             position: absolute;
-            top: -25px;
+            top: -30px;
             right: 5px;
             display: none;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 5px;
+            border-radius: 5px;
         }
 
         .options button {
@@ -86,34 +119,6 @@
         .delete-btn {
             background-color: #dc3545;
             color: white;
-        }
-
-        .input-container {
-            display: flex;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-        }
-
-        .input-container textarea, .input-container button {
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            font-size: 16px;
-            margin: 5px;
-        }
-
-        .input-container textarea {
-            flex: 1;
-            resize: none;
-        }
-
-        .input-container button {
-            background-color: #28a745;
-            color: white;
-            cursor: pointer;
         }
 
         #idInputContainer {
@@ -203,8 +208,8 @@
             options.appendChild(copyBtn);
             options.appendChild(deleteBtn);
 
-            messageContainer.appendChild(messageElement);
             messageContainer.appendChild(options);
+            messageContainer.appendChild(messageElement);
             chatContainer.prepend(messageContainer);
 
             messageElement.addEventListener("contextmenu", function(event) {

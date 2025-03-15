@@ -1,0 +1,11 @@
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('https://imgur.com/a/0C4FbCi'); /* استبدل 'background.jpg' برابط أو اسم صورة */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    direction: rtl;
+    text-align: center;
+}

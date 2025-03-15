@@ -87,6 +87,9 @@
         }
 
         function showContextMenu(event, messageText) {
+            // منع إظهار القائمة أكثر من مرة
+            if (document.querySelector(".context-menu")) return;
+
             const menu = document.createElement('div');
             menu.classList.add("context-menu");
             menu.style.left = `${event.pageX}px`;
@@ -112,6 +115,16 @@
             menu.appendChild(copyOption);
             menu.appendChild(deleteOption);
             document.body.appendChild(menu);
+
+            // إغلاق القائمة عند الضغط في مكان آخر
+            document.addEventListener('click', closeContextMenu, { once: true });
+        }
+
+        function closeContextMenu(event) {
+            const menu = document.querySelector(".context-menu");
+            if (menu) {
+                document.body.removeChild(menu);
+            }
         }
 
         function deleteMessage(messageText) {

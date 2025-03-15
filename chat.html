@@ -21,6 +21,17 @@
             justify-content: flex-end;
         }
 
+        #chatContainer {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column-reverse;
+            overflow-y: auto;
+            padding: 10px;
+            height: calc(100vh - 100px);
+            max-height: 70vh;
+            width: 100%;
+        }
+
         .input-container {
             display: flex;
             position: fixed;
@@ -48,15 +59,6 @@
             background-color: #28a745;
             color: white;
             cursor: pointer;
-        }
-
-        #chatContainer {
-            flex-grow: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column-reverse;
-            padding: 10px;
-            max-height: calc(100vh - 80px);
         }
 
         .message-container {

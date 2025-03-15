@@ -8,7 +8,7 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-image: url('a628486ff04656f787be2a3bad17352e_low.webp');
+            background-image: linear-gradient(to bottom, #3498db, #2ecc71);
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -30,6 +30,8 @@
             height: calc(100vh - 100px);
             max-height: 70vh;
             width: 100%;
+            max-width: 800px; /* تحديد عرض الحاوية */
+            margin: auto; /* مركز الحاوية */
         }
 
         .input-container {
@@ -40,6 +42,11 @@
             background: rgba(0, 0, 0, 0.7);
             padding: 10px;
             box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .input-container:hover {
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
         }
 
         .input-container textarea, .input-container button {
@@ -59,6 +66,11 @@
             background-color: #28a745;
             color: white;
             cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .input-container button:hover {
+            background-color: #1e7e34;
         }
 
         .message-container {
@@ -66,6 +78,7 @@
             align-items: center;
             position: relative;
             margin-bottom: 10px;
+            transition: all 0.3s ease;
         }
 
         .sent {
@@ -82,6 +95,7 @@
             max-width: 70%;
             word-wrap: break-word;
             position: relative;
+            transition: all 0.3s ease;
         }
 
         .sent .message {
@@ -92,6 +106,10 @@
         .received .message {
             background-color: #f1f1f1;
             color: black;
+        }
+
+        .message:hover {
+            transform: scale(1.01);
         }
 
         .options {

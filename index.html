@@ -3,257 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOOX - دردشة عبر Telegram API</title>
-    <link rel="stylesheet" href="style.css">  <!-- ربط ملف CSS هنا -->
+    <title>التحقق من الرمز</title>
     <style>
-        /* إضافة تصميم فخم للنص والخلفية */
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
-        }
-
-        #siteName {
-            text-align: center;
-            font-size: 2em;
-            color: #444;
-            margin-top: 20px;
-        }
-
-        .chat-container {
-            margin-top: 20px;
-            max-height: 400px;
-            overflow-y: auto;
-            background-color: #fff;
-            border-radius: 10px;
-            padding: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .message-container {
-            margin: 10px 0;
-        }
-
-        .message {
-            background-color: #e0e0e0;
-            border-radius: 15px;
-            padding: 10px;
-            max-width: 80%;
-            margin: 5px 0;
-            font-size: 1.1em;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .message:hover {
-            background-color: #d1d1d1;
-            transform: scale(1.02);
-        }
-
-        .sent .message {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .received .message {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
             background-color: #f1f1f1;
-            color: #333;
         }
-
-        .context-menu {
-            position: absolute;
+        .container {
+            text-align: center;
             background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            padding: 10px;
-            z-index: 1000;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-
-        .context-menu button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
+        input, button {
             padding: 10px;
-            width: 150px;
-            margin: 5px 0;
+            margin: 10px 0;
             border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            border: 1px solid #ddd;
+            font-size: 1em;
+            width: 100%;
         }
-
-        .context-menu button:hover {
-            background-color: #45a049;
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
         }
     </style>
 </head>
 <body>
 
-    <div id="siteName">NOOX</div>
-
-    <form id="messageForm">
-        <label for="username">ادخل ID المستخدم :</label><br>
-        <input type="text" id="username" name="username" placeholder="ID"><br><br>
-
-        <label for="message">أدخل الرسالة:</label><br>
-        <textarea id="message" name="message" rows="4" required></textarea><br><br>
-
-        <button type="submit">إرسال الرسالة</button>
-    </form>
-
-    <div class="typing-status" id="typingStatus"></div>
-
-    <h3>المحادثة:</h3>
-    <div class="chat-container" id="chatContainer"></div>
+    <div class="container" id="container">
+        <h2>الرجاء إدخال الرمز</h2>
+        <input type="text" id="code" placeholder="أدخل الرمز هنا" />
+        <button onclick="verifyCode()">تأكيد</button>
+        <div id="error" class="error"></div>
+    </div>
 
     <script>
-        const token = "7283631968:AAGOJaiPIpsXeUxaAV902aQx2nhtEzIvWa0"; // ضع توكن البوت الخاص بك هنا
-        const chatIdInput = document.getElementById("username");
-        const chatContainer = document.getElementById("chatContainer");
-        const typingStatus = document.getElementById("typingStatus");
-        let lastMessageId = 0;
+        const correctCode = "MONDXSD3";
+        let attempts = 0;
+        const maxAttempts = 4;
+        let lockTime = 0;
 
-        document.getElementById("messageForm").addEventListener("submit", function(event) {
-            event.preventDefault();
-            const chatId = chatIdInput.value.trim();
-            const messageText = document.getElementById("message").value;
+        function verifyCode() {
+            const codeInput = document.getElementById("code").value;
+            const errorDiv = document.getElementById("error");
 
-            if (!chatId || !messageText) return;
-
-            const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(messageText)}`;
-
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.ok) {
-                        appendMessage("sent", messageText, "تم الإرسال ");
-                        setTimeout(() => {
-                            markAsRead();
-                        }, 2000);
-                    } else {
-                        alert("فشل في إرسال الرسالة، تحقق ID!");
-                    }
-                })
-                .catch(error => {
-                    alert("خطأ أثناء الإرسال!");
-                });
-
-            document.getElementById("message").value = "";
-        });
-
-        function appendMessage(type, text, status = "") {
-            const messageContainer = document.createElement('div');
-            messageContainer.classList.add("message-container", type);
-
-            const messageElement = document.createElement('div');
-            messageElement.classList.add("message");
-            messageElement.textContent = text;
-
-            // إضافة أحداث الضغط المطول
-            messageElement.addEventListener('contextmenu', function(event) {
-                event.preventDefault(); // منع القوائم الافتراضية وتحديد النص
-                showContextMenu(event, messageElement, text);
-            });
-
-            if (type === "sent") {
-                const statusElement = document.createElement('div');
-                statusElement.classList.add("status");
-                statusElement.textContent = status;
-                messageElement.appendChild(statusElement);
+            if (lockTime > 0) {
+                const timeLeft = Math.ceil(lockTime / 60);
+                errorDiv.textContent = `تم قفل الوصول، يمكنك المحاولة بعد ${timeLeft} دقيقة.`;
+                return;
             }
 
-            messageContainer.appendChild(messageElement);
-            chatContainer.appendChild(messageContainer);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        function showContextMenu(event, messageElement, messageText) {
-            // منع إظهار القائمة أكثر من مرة
-            if (document.querySelector(".context-menu")) return;
-
-            const menu = document.createElement('div');
-            menu.classList.add("context-menu");
-            menu.style.left = `${event.pageX}px`;
-            menu.style.top = `${event.pageY}px`;
-
-            // إضافة خيار نسخ
-            const copyOption = document.createElement('button');
-            copyOption.textContent = "نسخ الرسالة";
-            copyOption.onclick = function() {
-                navigator.clipboard.writeText(messageText);
-                alert("تم نسخ الرسالة");
-                document.body.removeChild(menu);
-            };
-
-            // إضافة خيار حذف
-            const deleteOption = document.createElement('button');
-            deleteOption.textContent = "حذف الرسالة";
-            deleteOption.onclick = function() {
-                deleteMessage(messageElement);
-                document.body.removeChild(menu);
-            };
-
-            menu.appendChild(copyOption);
-            menu.appendChild(deleteOption);
-            document.body.appendChild(menu);
-
-            // إغلاق القائمة عند الضغط في مكان آخر
-            document.addEventListener('click', closeContextMenu, { once: true });
-        }
-
-        function closeContextMenu(event) {
-            const menu = document.querySelector(".context-menu");
-            if (menu) {
-                document.body.removeChild(menu);
-            }
-        }
-
-        function deleteMessage(messageElement) {
-            const isSent = messageElement.classList.contains('sent');
-            if (isSent) {
-                // إذا كانت الرسالة مرسلة من قبل المستخدم
-                messageElement.parentElement.remove();
-                alert("تم حذف رسالتك");
+            if (codeInput === correctCode) {
+                window.location.href = "chat.html"; // انتقل إلى صفحة المراسلة
             } else {
-                // إذا كانت الرسالة مرسلة من شخص آخر
-                messageElement.parentElement.remove();
-                alert("تم حذف رسالة الشخص الآخر");
+                attempts++;
+                if (attempts >= maxAttempts) {
+                    lockTime = 15 * 60; // قفل الوصول لمدة 15 دقيقة
+                    errorDiv.textContent = "لقد أدخلت الرمز بشكل خاطئ 4 مرات، سيتم قفل الوصول لمدة 15 دقيقة.";
+                    setTimeout(() => {
+                        lockTime = 0;
+                    }, 15 * 60 * 1000); // إلغاء القفل بعد 15 دقيقة
+                } else {
+                    errorDiv.textContent = "الرمز غير صحيح، حاول مجددًا.";
+                }
             }
         }
-
-        function markAsRead() {
-            const sentMessages = document.querySelectorAll(".sent .status");
-            sentMessages.forEach(status => {
-                status.textContent = "تم القراءة";
-            });
-        }
-
-        function fetchMessages() {
-            const url = `https://api.telegram.org/bot${token}/getUpdates`;
-
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    data.result.forEach(msg => {
-                        if (msg.message && msg.message.message_id > lastMessageId) {
-                            lastMessageId = msg.message.message_id;
-                            if (msg.message.text) {
-                                appendMessage("received", msg.message.text);
-                            }
-                        }
-                    });
-                })
-                .catch(error => console.error("خطأ في جلب الرسائل:", error));
-        }
-
-        function checkTypingStatus() {
-            typingStatus.textContent = "يكتب...";
-            setTimeout(() => {
-                typingStatus.textContent = "";
-            }, 1500);
-        }
-
-        setInterval(fetchMessages, 5000);
-        setInterval(checkTypingStatus, 4000);
     </script>
 
 </body>

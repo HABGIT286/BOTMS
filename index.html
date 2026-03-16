@@ -252,14 +252,13 @@
   </section>
 
   <section class="loc-sec" id="location">
-    <h2 class="st">📍 تحديد موقعك</h2>
+    <h2 class="st">📍 تحديد موقعك التلقائي</h2>
     <div class="loc-box">
-      <div class="loc-st"><div class="sd" id="sd"></div><span id="st">اضغط لتحديد موقعك</span></div>
-      <button class="btn" id="getLoc" style="width:100%;justify-content:center">🔍 تحديد الموقع الآن</button>
+      <div class="loc-st"><div class="sd" id="sd"></div><span id="st">جاري تحديد الموقع تلقائياً...</span></div>
       <div class="loc-d" id="ld">
         <div class="dr"><span class="dl">الدولة:</span><span class="dv" id="country">-</span></div>
         <div class="dr"><span class="dl">المدينة:</span><span class="dv" id="city">-</span></div>
-        <div class="dr"><span class="dl">الإحداثيات:</span><span class="dv" id="coords">-</span></div>
+        <div class="dr"><span class="dl">المنطقة:</span><span class="dv" id="region">-</span></div>
         <div class="dr"><span class="dl">الوقت:</span><span class="dv" id="time">-</span></div>
       </div>
       <a href="IOCATION.html" class="rl" id="rl">📊 عرض النتائج التفصيلية →</a>
@@ -276,7 +275,13 @@
     // الجسيمات
     function makePt(){const c=document.getElementById('pt');for(let i=0;i<50;i++){const p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';p.style.animationDelay=Math.random()*20+'s';p.style.animationDuration=(15+Math.random()*20)+'s';c.appendChild(p)}}
     
-    window.addEventListener('load',()=>{setTimeout(()=>{document.getElementById('loader').classList.add('hidden');makePt();upTime()},1200)});
+    window.addEventListener('load',()=>{
+      setTimeout(()=>{
+        document.getElementById('loader').classList.add('hidden');
+        makePt();
+        getLocation(); // ✅ تحديد تلقائي بدون إذن
+      },1200)
+    });
     
     function upTime(){document.getElementById('time').textContent=new Date().toLocaleTimeString('ar-EG');setTimeout(upTime,1000)}
     
@@ -284,32 +289,51 @@
     
     function showT(m){toast.textContent=m;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),3000)}
     
-    document.getElementById('getLoc').addEventListener('click',async()=>{
-      if(!navigator.geolocation){st.textContent='❌ المتصفح لا يدعم الموقع';sd.className='sd';return}
-      st.textContent='🔄 جاري التحديد...';sd.className='sd';
-      
+    // ✅ دالة تحديد الموقع تلقائياً عبر IP (بدون إذن المستخدم)
+    async function getLocation(){
       try{
-        // 1. جلب الإحداثيات
-        const pos=await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej,{enableHighAccuracy:true,timeout:10000}));
-        const{latitude,longitude}=pos.coords;
-                // 2. جلب بيانات الموقع من API مجاني (يعمل من المتصفح)
-        const geoRes=await fetch(`https://ipapi.co/json/`);
-        const geo=await geoRes.json();
+        st.textContent='🔄 جاري الاتصال...';        sd.className='sd';
         
-        // 3. عرض البيانات
-        document.getElementById('country').textContent=geo.country_name||'غير معروف';
-        document.getElementById('city').textContent=geo.city||'غير معروف';
-        document.getElementById('coords').textContent=`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+        // استخدام IP API (لا يحتاج إذن)
+        const res=await fetch('https://ipapi.co/json/');
+        const data=await res.json();
         
-        sd.className='sd active';st.textContent='✓ تم التحديد';ld.classList.add('show');
+        if(data.error){throw new Error('فشل في جلب البيانات')}
         
-        // 4. حفظ البيانات لصفحة النتائج
-        const data={country:geo.country_name,city:geo.city,coords:`${latitude},${longitude}`,timestamp:new Date().toISOString(),device:navigator.userAgent.slice(0,60)};
-        localStorage.setItem('boneLoc',JSON.stringify(data));
+        // عرض البيانات
+        document.getElementById('country').textContent=data.country_name||'غير معروف';
+        document.getElementById('city').textContent=data.city||'غير معروف';
+        document.getElementById('region').textContent=data.region||'غير معروف';
         
-        setTimeout(()=>{rl.classList.add('visible');showT(`✅ ${geo.city}, ${geo.country_name}`)},600);
-      }catch(e){console.error(e);st.textContent='⚠️ فشل التحديد';sd.className='sd';showT('⚠️ تأكد من الإنترنت')}
-    });
+        sd.className='sd active';
+        st.textContent='✓ تم تحديد الموقع تلقائياً';
+        ld.classList.add('show');
+        upTime();
+        
+        // حفظ البيانات لصفحة النتائج
+        const locData={
+          country:data.country_name,
+          city:data.city,
+          region:data.region,
+          ip:data.ip,
+          coords:`${data.latitude||'N/A'}, ${data.longitude||'N/A'}`,
+          timestamp:new Date().toISOString(),
+          device:navigator.userAgent.slice(0,60)
+        };
+        localStorage.setItem('boneLoc',JSON.stringify(locData));
+        
+        setTimeout(()=>{
+          rl.classList.add('visible');
+          showT(`✅ ${data.city}, ${data.country_name}`);
+        },600);
+        
+      }catch(e){
+        console.error(e);
+        st.textContent='⚠️ فشل تحديد الموقع';
+        sd.className='sd';
+        showT('⚠️ تأكد من اتصالك بالإنترنت');
+      }
+    }
     
     // سكرول ناعم
     document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'})}));
@@ -317,5 +341,4 @@
     // تفاعل البطاقات
     document.querySelectorAll('.card').forEach(c=>{c.addEventListener('mouseenter',()=>c.style.zIndex='10');c.addEventListener('mouseleave',()=>c.style.zIndex='1')});
   </script>
-</body>
-</html>
+</body></html>

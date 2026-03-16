@@ -1,19 +1,321 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<title>VirusTotal Scanner</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🦴 مركز د. العظام | نظام التشخيص المتقدم</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --primary:#0a0e27;--secondary:#1a1f4a;--accent:#00d4aa;
+      --glow:rgba(0,212,170,0.6);--gold:#ffd700;--bone:#f5f0e6;
+      --text:#fff;--muted:#a0a8c0
+    }
+    body{
+      font-family:'Tajawal',sans-serif;background:var(--primary);
+      color:var(--text);min-height:100vh;overflow-x:hidden;position:relative
+    }
+    .bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;
+      background:radial-gradient(ellipse at 20% 80%,rgba(0,212,170,.15),transparent 50%),
+                 radial-gradient(ellipse at 80% 20%,rgba(100,149,237,.12),transparent 50%),
+                 radial-gradient(ellipse at 50% 50%,rgba(255,215,0,.08),transparent 70%);
+      animation:bp 15s ease-in-out infinite}
+    @keyframes bp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.85;transform:scale(1.05)}}
+    
+    .particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+    .particle{
+      position:absolute;width:4px;height:4px;background:var(--accent);
+      border-radius:50%;box-shadow:0 0 10px var(--glow);
+      animation:fl 20s infinite linear;opacity:.6
+    }
+    @keyframes fl{0%{transform:translateY(100vh)rotate(0);opacity:0}
+      10%,90%{opacity:.6}100%{transform:translateY(-100px)rotate(720deg);opacity:0}}
+    
+    header{padding:20px 5%;display:flex;justify-content:space-between;
+      align-items:center;position:relative;z-index:10;
+      backdrop-filter:blur(10px);background:rgba(10,14,39,.7);
+      border-bottom:1px solid rgba(0,212,170,.3)}
+    .logo{display:flex;align-items:center;gap:12px;font-size:1.5rem;font-weight:900}
+    .logo-i{
+      width:45px;height:45px;background:linear-gradient(135deg,var(--accent),#00a885);
+      border-radius:12px;display:flex;align-items:center;justify-content:center;
+      font-size:1.5rem;box-shadow:0 0 25px var(--glow);animation:pl 2s ease-in-out infinite
+    }
+    @keyframes pl{0%,100%{box-shadow:0 0 25px var(--glow)}
+      50%{box-shadow:0 0 45px var(--glow),0 0 60px rgba(0,212,170,.4)}}
+    nav ul{display:flex;gap:25px;list-style:none}
+    nav a{color:var(--muted);text-decoration:none;font-weight:500;
+      padding:8px 15px;border-radius:8px;transition:.3s;position:relative}
+    nav a:hover,nav a.active{color:var(--accent);background:rgba(0,212,170,.1)}    nav a::after{content:'';position:absolute;bottom:-5px;left:50%;
+      transform:translateX(-50%);width:0;height:2px;background:var(--accent);transition:.3s}
+    nav a:hover::after{width:70%}
+    
+    .hero{min-height:90vh;display:flex;align-items:center;justify-content:center;
+      padding:40px 5%;position:relative;overflow:hidden}
+    .hero-c{max-width:650px;text-align:center;z-index:5;animation:su 1s ease-out}
+    @keyframes su{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+    .hero h1{
+      font-size:3.5rem;font-weight:900;margin-bottom:20px;
+      background:linear-gradient(135deg,#fff,var(--accent),var(--gold));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;line-height:1.2;text-shadow:0 0 30px rgba(0,212,170,.3)
+    }
+    .hero p{font-size:1.3rem;color:var(--muted);margin-bottom:35px;line-height:1.7}
+    
+    .btn{
+      display:inline-flex;align-items:center;gap:10px;padding:16px 40px;
+      background:linear-gradient(135deg,var(--accent),#00a885);color:var(--primary);
+      font-weight:700;font-size:1.1rem;border:none;border-radius:50px;
+      cursor:pointer;transition:.4s;box-shadow:0 10px 30px rgba(0,212,170,.4);
+      text-decoration:none;position:relative;overflow:hidden
+    }
+    .btn::before{content:'';position:absolute;top:0;left:-100%;
+      width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
+      transition:left .6s}
+    .btn:hover::before{left:100%}
+    .btn:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(0,212,170,.6)}
+    
+    .bone3d{
+      position:absolute;right:5%;top:50%;transform:translateY(-50%);
+      width:450px;height:500px;perspective:1000px;z-index:3;display:none
+    }
+    @media(min-width:1100px){.bone3d{display:block}}
+    .bone-m{width:100%;height:100%;position:relative;
+      transform-style:preserve-3d;animation:r3d 25s infinite linear}
+    @keyframes r3d{0%{transform:rotateY(0)rotateX(10deg)}100%{transform:rotateY(360deg)rotateX(10deg)}}
+    .bone-p{
+      position:absolute;background:linear-gradient(145deg,var(--bone),#d4c5a9);
+      border-radius:50% 50% 45% 45%;
+      box-shadow:inset 0 -10px 30px rgba(0,0,0,.1),0 15px 35px rgba(0,0,0,.3);
+      border:2px solid rgba(255,255,255,.2)
+    }
+    .bone-h{width:120px;height:140px;top:20%;left:50%;transform:translateX(-50%)rotateX(-10deg)}
+    .bone-s{width:60px;height:220px;top:45%;left:50%;transform:translateX(-50%)rotateX(-5deg);border-radius:30px}
+    .bone-j{width:90px;height:80px;bottom:15%;left:50%;transform:translateX(-50%);border-radius:45% 45% 50% 50%}
+    .hl{
+      position:absolute;width:12px;height:12px;background:var(--accent);
+      border-radius:50%;box-shadow:0 0 20px var(--glow);animation:gp 2s ease-in-out infinite
+    }    @keyframes gp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(1.3)}}
+    
+    .sec{padding:100px 5%;position:relative}
+    .st{text-align:center;font-size:2.5rem;margin-bottom:60px;position:relative;
+      display:inline-block;left:50%;transform:translateX(-50%)}
+    .st::after{content:'';position:absolute;bottom:-15px;left:50%;
+      transform:translateX(-50%);width:80px;height:4px;background:var(--accent);
+      border-radius:2px;box-shadow:0 0 15px var(--glow)}
+    
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:30px;max-width:1400px;margin:0 auto}
+    .card{
+      background:linear-gradient(145deg,var(--secondary),#151a3d);
+      border-radius:20px;padding:30px;position:relative;overflow:hidden;
+      border:1px solid rgba(0,212,170,.2);transition:.4s;cursor:pointer
+    }
+    .card:hover{transform:translateY(-10px);border-color:var(--accent);
+      box-shadow:0 20px 50px rgba(0,0,0,.4),0 0 30px rgba(0,212,170,.2)}
+    .card::before{content:'';position:absolute;top:-50%;left:-50%;
+      width:200%;height:200%;background:radial-gradient(circle,rgba(0,212,170,.1),transparent 70%);
+      opacity:0;transition:.4s;pointer-events:none}
+    .card:hover::before{opacity:1}
+    .ci{
+      width:70px;height:70px;background:linear-gradient(135deg,var(--accent),#008f72);
+      border-radius:18px;display:flex;align-items:center;justify-content:center;
+      font-size:2rem;margin-bottom:20px;box-shadow:0 10px 25px rgba(0,212,170,.3)
+    }
+    .card h3{font-size:1.5rem;margin-bottom:12px}
+    .card p{color:var(--muted);line-height:1.6;font-size:.95rem}
+    .ai{
+      position:absolute;top:20px;left:20px;width:30px;height:30px;
+      border:2px solid var(--accent);border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-size:.8rem;color:var(--accent);animation:bc 2s infinite
+    }
+    @keyframes bc{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+    
+    .loc-sec{padding:80px 5%;text-align:center;
+      background:linear-gradient(180deg,transparent,rgba(0,212,170,.05),transparent)}
+    .loc-box{
+      max-width:600px;margin:0 auto;background:rgba(26,31,74,.6);
+      border-radius:25px;padding:40px;border:1px solid rgba(0,212,170,.3);
+      box-shadow:0 15px 40px rgba(0,0,0,.3)
+    }
+    .loc-st{display:flex;align-items:center;justify-content:center;
+      gap:12px;margin-bottom:25px;font-size:1.1rem}
+    .sd{width:12px;height:12px;background:#ff4757;border-radius:50%;animation:bl 1.5s infinite}
+    .sd.active{background:var(--accent);animation:none;box-shadow:0 0 15px var(--glow)}
+    @keyframes bl{0%,100%{opacity:1}50%{opacity:.4}}
+        .loc-d{
+      text-align:right;margin-top:20px;padding-top:20px;
+      border-top:1px dashed rgba(255,255,255,.2);display:none
+    }
+    .loc-d.show{display:block;animation:fi .6s ease-out}
+    @keyframes fi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .dr{display:flex;justify-content:space-between;padding:10px 0;
+      border-bottom:1px solid rgba(255,255,255,.1)}
+    .dr:last-child{border-bottom:none}
+    .dl{color:var(--muted)}
+    .dv{font-weight:600;color:var(--accent)}
+    
+    .rl{
+      display:inline-block;margin-top:25px;padding:12px 30px;
+      background:transparent;border:2px solid var(--accent);color:var(--accent);
+      border-radius:50px;text-decoration:none;font-weight:600;transition:.3s;
+      opacity:0;transform:translateY(10px)
+    }
+    .rl.visible{opacity:1;transform:translateY(0);transition:.5s .3s}
+    .rl:hover{background:var(--accent);color:var(--primary);
+      box-shadow:0 10px 30px rgba(0,212,170,.4)}
+    
+    footer{padding:40px 5%;text-align:center;
+      border-top:1px solid rgba(0,212,170,.2);color:var(--muted);font-size:.95rem}
+    .fl{display:flex;justify-content:center;gap:25px;margin:20px 0;flex-wrap:wrap}
+    .fl a{color:var(--muted);text-decoration:none;transition:.3s}
+    .fl a:hover{color:var(--accent)}
+    
+    .gl{
+      position:absolute;height:2px;
+      background:linear-gradient(90deg,transparent,var(--accent),transparent);
+      animation:gm 8s linear infinite;opacity:.6;z-index:1
+    }
+    @keyframes gm{0%{transform:translateX(-100%);opacity:0}
+      10%,90%{opacity:.6}100%{transform:translateX(100vw);opacity:0}}
+    
+    .toast{
+      position:fixed;bottom:30px;left:50%;transform:translateX(-50%)translateY(100px);
+      background:linear-gradient(135deg,var(--secondary),#0f1430);color:var(--text);
+      padding:15px 30px;border-radius:15px;border-left:4px solid var(--accent);
+      box-shadow:0 10px 40px rgba(0,0,0,.4);z-index:1000;transition:.4s;
+      max-width:400px;text-align:center
+    }
+    .toast.show{transform:translateX(-50%)translateY(0)}
+    
+    .loader{
+      position:fixed;top:0;left:0;width:100%;height:100%;
+      background:var(--primary);display:flex;align-items:center;
+      justify-content:center;z-index:9999;transition:.5s
+    }    .loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
+    .lc{text-align:center}
+    .lb{
+      width:80px;height:120px;background:linear-gradient(145deg,var(--bone),#d4c5a9);
+      border-radius:40px 40px 35px 35px;margin:0 auto 25px;position:relative;
+      animation:bl2 1.5s ease-in-out infinite
+    }
+    @keyframes bl2{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+    .lb::before{
+      content:'';position:absolute;top:15px;left:50%;transform:translateX(-50%);
+      width:40px;height:40px;background:var(--bone);border-radius:50%;
+      border:3px solid rgba(0,0,0,.1)
+    }
+    .lt{color:var(--accent);font-weight:600;font-size:1.1rem}
+    
+    @media(max-width:900px){
+      .hero{flex-direction:column;text-align:center;padding-top:20px}
+      .hero h1{font-size:2.5rem}
+      nav ul{gap:15px;font-size:.9rem}
+      .bone3d{display:none}
+      .st{font-size:2rem}
+    }
+  </style>
 </head>
 <body>
+  <div class="loader" id="loader"><div class="lc"><div class="lb"></div><div class="lt">جاري تحميل النظام الطبي...</div></div></div>
+  <div class="bg"></div><div class="particles" id="pt"></div>
+  <div class="gl" style="top:20%"></div><div class="gl" style="top:50%;animation-delay:2s"></div>
+  <div class="gl" style="top:80%;animation-delay:4s"></div>
 
-<div class="container">
-  <h1 class="title">VirusTotal Website Scanner</h1>
-  <input id="domain" placeholder="https://example.com">
-  <button onclick="scan()">Scan</button>
-  <div id="result" class="result"></div>
-</div>
+  <header>
+    <div class="logo"><div class="logo-i">🦴</div><span>د. العظام المتخصص</span></div>
+    <nav><ul><li><a href="#" class="active">الرئيسية</a></li><li><a href="#bones">العظام</a></li><li><a href="#services">الخدمات</a></li><li><a href="#contact">اتصل بنا</a></li></ul></nav>
+  </header>
 
-<script src="script.js"></script>
+  <section class="hero">
+    <div class="hero-c">
+      <h1>نظام التشخيص المتقدم للعظام والمفاصل</h1>
+      <p>تقنيات 3D متطورة، تحليل دقيق، وخطط علاج مخصصة بأحدث الوسائل الطبية العالمية. خبرة تزيد عن 15 عاماً.</p>
+      <a href="#bones" class="btn"><span>استكشف النظام</span><span>→</span></a>
+    </div>
+    <div class="bone3d"><div class="bone-m">
+      <div class="bone-p bone-h"><div class="hl" style="top:30%;right:20%"></div></div>
+      <div class="bone-p bone-s"></div>
+      <div class="bone-p bone-j"><div class="hl" style="bottom:25%;left:25%"></div></div>
+    </div></div>
+  </section>
+
+  <section class="sec" id="bones">
+    <h2 class="st">🦴 نظام العظام التفاعلي</h2>    <div class="grid">
+      <div class="card"><div class="ai">1</div><div class="ci">🦴</div><h3>الهيكل العظمي</h3><p>عرض تفاعلي ثلاثي الأبعاد للهيكل العظمي البشري مع إمكانية التكبير والتحليل التفصيلي.</p></div>
+      <div class="card"><div class="ai">2</div><div class="ci">🦵</div><h3>المفاصل والحركة</h3><p>تحليل ديناميكي لحركة المفاصل، نطاق الحركة، وتشخيص الإصابات الرياضية.</p></div>
+      <div class="card"><div class="ai">3</div><div class="ci">🔬</div><h3>التشخيص الدقيق</h3><p>دمج صور الأشعة والرنين المغناطيسي في نظام ذكي لدعم القرار الطبي.</p></div>
+      <div class="card"><div class="ai">4</div><div class="ci">💊</div><h3>خطط العلاج</h3><p>توليد تلقائي لخطط علاج مخصصة بناءً على حالة المريض مع متابعة التقدم.</p></div>
+    </div>
+  </section>
+
+  <section class="loc-sec" id="location">
+    <h2 class="st">📍 تحديد موقعك</h2>
+    <div class="loc-box">
+      <div class="loc-st"><div class="sd" id="sd"></div><span id="st">اضغط لتحديد موقعك</span></div>
+      <button class="btn" id="getLoc" style="width:100%;justify-content:center">🔍 تحديد الموقع الآن</button>
+      <div class="loc-d" id="ld">
+        <div class="dr"><span class="dl">الدولة:</span><span class="dv" id="country">-</span></div>
+        <div class="dr"><span class="dl">المدينة:</span><span class="dv" id="city">-</span></div>
+        <div class="dr"><span class="dl">الإحداثيات:</span><span class="dv" id="coords">-</span></div>
+        <div class="dr"><span class="dl">الوقت:</span><span class="dv" id="time">-</span></div>
+      </div>
+      <a href="IOCATION.html" class="rl" id="rl">📊 عرض النتائج التفصيلية →</a>
+    </div>
+  </section>
+
+  <footer id="contact">
+    <div class="fl"><a href="#">الخصوصية</a><a href="#">الشروط</a><a href="#">الدعم</a><a href="#">حجز موعد</a></div>
+    <p>© 2026 مركز د. العظام. جميع الحقوق محفوظة.<br>نظام بقيمة <strong style="color:var(--gold)">$3000</strong></p>
+  </footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // الجسيمات
+    function makePt(){const c=document.getElementById('pt');for(let i=0;i<50;i++){const p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';p.style.animationDelay=Math.random()*20+'s';p.style.animationDuration=(15+Math.random()*20)+'s';c.appendChild(p)}}
+    
+    window.addEventListener('load',()=>{setTimeout(()=>{document.getElementById('loader').classList.add('hidden');makePt();upTime()},1200)});
+    
+    function upTime(){document.getElementById('time').textContent=new Date().toLocaleTimeString('ar-EG');setTimeout(upTime,1000)}
+    
+    const sd=document.getElementById('sd'),st=document.getElementById('st'),ld=document.getElementById('ld'),rl=document.getElementById('rl'),toast=document.getElementById('toast');
+    
+    function showT(m){toast.textContent=m;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),3000)}
+    
+    document.getElementById('getLoc').addEventListener('click',async()=>{
+      if(!navigator.geolocation){st.textContent='❌ المتصفح لا يدعم الموقع';sd.className='sd';return}
+      st.textContent='🔄 جاري التحديد...';sd.className='sd';
+      
+      try{
+        // 1. جلب الإحداثيات
+        const pos=await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej,{enableHighAccuracy:true,timeout:10000}));
+        const{latitude,longitude}=pos.coords;
+                // 2. جلب بيانات الموقع من API مجاني (يعمل من المتصفح)
+        const geoRes=await fetch(`https://ipapi.co/json/`);
+        const geo=await geoRes.json();
+        
+        // 3. عرض البيانات
+        document.getElementById('country').textContent=geo.country_name||'غير معروف';
+        document.getElementById('city').textContent=geo.city||'غير معروف';
+        document.getElementById('coords').textContent=`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+        
+        sd.className='sd active';st.textContent='✓ تم التحديد';ld.classList.add('show');
+        
+        // 4. حفظ البيانات لصفحة النتائج
+        const data={country:geo.country_name,city:geo.city,coords:`${latitude},${longitude}`,timestamp:new Date().toISOString(),device:navigator.userAgent.slice(0,60)};
+        localStorage.setItem('boneLoc',JSON.stringify(data));
+        
+        setTimeout(()=>{rl.classList.add('visible');showT(`✅ ${geo.city}, ${geo.country_name}`)},600);
+      }catch(e){console.error(e);st.textContent='⚠️ فشل التحديد';sd.className='sd';showT('⚠️ تأكد من الإنترنت')}
+    });
+    
+    // سكرول ناعم
+    document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'})}));
+    
+    // تفاعل البطاقات
+    document.querySelectorAll('.card').forEach(c=>{c.addEventListener('mouseenter',()=>c.style.zIndex='10');c.addEventListener('mouseleave',()=>c.style.zIndex='1')});
+  </script>
 </body>
 </html>

